@@ -1,21 +1,37 @@
-build
-dist / media
-node_modules
-.DS_Store
-.env
-.next
-.vercel
-
-# Payload default media upload directory
-public/media/
-
-public/robots.txt
-public/sitemap*.xml
-
-
-# Playwright
+# Node.js
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+.next/
+out/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+
+# Payload generated data (if any)
+payload-config.ts.backup
+uploads/
+
+# Dependency lock files (optional: keep only the one you use)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
