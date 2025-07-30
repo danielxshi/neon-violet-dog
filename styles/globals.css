@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------
+   BASE TYPOGRAPHY RESET
+---------------------------------- */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-size: unset;
+    font-weight: unset;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+  }
+}
+
+/* ---------------------------------
+   THEME VARIABLES
+---------------------------------- */
+@layer base {
+  :root {
+    --background: #efefef;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 240 5% 96%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 6% 80%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.2rem;
+
+    --success: 196 52% 74%;
+    --warning: 34 89% 85%;
+    --error: 10 100% 86%;
+  }
+
+  [data-theme='dark'] {
+    --background: 0 0% 0%;
+    --foreground: 210 40% 98%;
+
+    --card: 0 0% 4%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0, 0%, 15%, 0.8;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --success: 196 100% 14%;
+    --warning: 34 51% 25%;
+    --error: 10 39% 43%;
+  }
+}
+
+/* ---------------------------------
+   GLOBAL HTML/BODY STYLES
+---------------------------------- */
+html {
+  opacity: 0;
+}
+
+html[data-theme='dark'],
+html[data-theme='light'] {
+  opacity: initial;
+}
+
+$black: black;
+$white: #efefef;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: $white !important;
+  color: $black;
+  text-transform: uppercase;
+  overflow-x: hidden;
+}
+
+/* ---------------------------------
+   NAVIGATION & UI ELEMENTS
+---------------------------------- */
+.nav-anim {
+  transform: translateY(-130%);
+}
+
+nav,
+button {
+  border-radius: 10px;
+  backdrop-filter: blur(20px);
+  z-index: 0;
+}
+
+a {
+  color: $white;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  background: white !important;
+}
+
+.hamburger {
+  position: relative;
+
+  * {
+    color: black;
+  }
+}
+
+/* ---------------------------------
+   LOADER / HERO ANIMATION ELEMENTS
+---------------------------------- */
+.landing-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  z-index: 1;
+  will-change: transform;
+}
+
+.hero-img {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  z-index: 0;
+
+  img {
+    transform: scale(0.5);
+    margin: auto;
+    height: 100%;
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  scale: 0.7;
+  background-color: #efefef;
+  clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);
+  z-index: 1000;
+}
+
+/* ---------------------------------
+   TEXT + HEADER
+---------------------------------- */
+.header,
+.header-img {
+  position: absolute;
+  width: 100%;
+  top: calc(50% - 5vw);
+  left: 0;
+  clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);
+  z-index: 1;
+
+  * {
+    margin: auto !important;
+  }
+}
+
+.header h1 {
+  font-size: 10vw;
+  font-weight: lighter;
+  text-align: center;
+  line-height: 100%;
+}
+
+.header h1 span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(500px);
+}
+
+.sub-height {
+  line-height: 0 !important;
+}
+
+/* ---------------------------------
+   MISC
+---------------------------------- */
+.counter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 20px;
+  text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.counter p {
+  display: block;
+  position: relative;
+  transform: translateY(20px);
+}
+
+p,
+a {
+  font-size: 14px;
+}

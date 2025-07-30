@@ -1,5 +1,15 @@
-import PageTemplate, { generateMetadata } from './[slug]/page'
+import dynamic from 'next/dynamic'
+import PostsSection from './components/post'
+import HomeClient from './components/HomeClient'
 
-export default PageTemplate
+// No 'use client' here – this is a server component
 
-export { generateMetadata }
+export default function HomePage() {
+  return (
+    <HomeClient>
+      <section data-scroll-section>
+        <PostsSection />
+      </section>
+    </HomeClient>
+  )
+}
