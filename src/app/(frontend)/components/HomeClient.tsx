@@ -5,9 +5,11 @@ import Section from '../../(frontend)/components/section/Section'
 import SectionLabel from '../../(frontend)/components/section/SectionLabel'
 import BigText from '../../(frontend)/components/section/BigText'
 import LogoContainer from '../../(frontend)/components/logo-container'
-import Logo from '../../(frontend)/components/logo'
+import Accordion from './list/accordion/accordion'
+
 import ZoomParallaxSection from './parallax/ZoomParallax'
 import News from './news'
+import Banner from './banner/HeaderBanner'
 
 interface Props {
   children?: React.ReactNode
@@ -16,6 +18,11 @@ interface Props {
 export default function HomeClient({ children }: Props) {
   return (
     <main className="flex-1">
+      <Banner
+        title="We're a multi-disciplinary Real Estate development firm focusing on developing properties that connect Nature, Architecture, Technology, and Functionality."
+        url=""
+        website="https://example.com"
+      ></Banner>
       <section className="relative">
         {/* Noise overlay */}
         {/* <div
@@ -41,6 +48,14 @@ export default function HomeClient({ children }: Props) {
           />
         </motion.div>
       </section>
+
+      {/* Services */}
+      <Section
+        data-scroll-section
+        className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]"
+      >
+        <Accordion />
+      </Section>
 
       <Section data-scroll-section>
         <SectionLabel>About Us</SectionLabel>

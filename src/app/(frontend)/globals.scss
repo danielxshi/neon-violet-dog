@@ -141,7 +141,6 @@ body {
   background-color: $white !important;
   color: $black;
   text-transform: uppercase;
-
 }
 
 /* ---------------------------------
@@ -278,4 +277,18 @@ a {
 p,
 a {
   font-size: 14px;
+}
+
+.service-section {
+  * {
+    color: $black !important;
+  }
+}
+
+a.reset-link {
+  opacity: 1;
+}
+
+a.reset-link::after {
+  visibility: hidden;
 }
