@@ -7,7 +7,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export default function HomeClient({ children }: Props) {
+export default function HomeClient() {
   return (
     <main className="flex-1">
       <Banner
@@ -16,14 +16,6 @@ export default function HomeClient({ children }: Props) {
         website="https://example.com"
       />
       <section className="relative">
-        {/* Noise overlay */}
-        {/* <div
-          className="absolute top-0 left-0 w-full h-[calc(100%+1px)] pointer-events-none z-[1]"
-          style={{
-            background: `url("https://www.gryphonliving.com/static/media/background_noise.735964358a992a7fe340.png"), linear-gradient(rgba(16, 27, 62, 0) 0%, rgb(16, 27, 62) 95%)`,
-          }}
-        ></div> */}
-
         <motion.div
           className="z-[10] w-full h-screen overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
