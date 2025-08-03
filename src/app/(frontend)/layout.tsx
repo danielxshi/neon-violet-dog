@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const montserratt = localFont({
   src: [
     {
-      path: '@/../public/fonts/montserrat/Montserrat-VariableFont_wght.ttf',
+      path: '../../../public/fonts/montserrat/Montserrat-VariableFont_wght.ttf',
       weight: '400',
       style: 'normal',
     },
@@ -31,7 +31,7 @@ const montserratt = localFont({
 const montserrattBold = localFont({
   src: [
     {
-      path: '../fonts/montserrat/Montserrat-Bold.ttf',
+      path: '../../../public/fonts/montserrat/Montserrat-Bold.ttf',
       weight: '400',
       style: 'normal',
     },

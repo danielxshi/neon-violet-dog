@@ -50,7 +50,7 @@ export default function TestimonialCarousel() {
       opacity: 1,
       scale: 1,
       transition: {
-        x: { type: 'spring', stiffness: 50, damping: 20 },
+        x: { stiffness: 50, damping: 20 },
         opacity: { duration: 0.4 },
         scale: { duration: 0.3 },
       },

@@ -13,7 +13,7 @@ gsap.registerPlugin(CustomEase)
 const pragati = localFont({
   src: [
     {
-      path: '../../../../public/fonts/Dinamit_Bold_Trial_A.ttf',
+      path: '../../../../public/fonts/dinamit/Dinamit_Bold_Trial_A.ttf',
       weight: '400',
       style: 'normal',
     },
