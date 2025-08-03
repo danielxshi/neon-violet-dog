@@ -10,6 +10,9 @@ import Accordion from './list/accordion/accordion'
 import ZoomParallaxSection from './parallax/ZoomParallax'
 import News from './news'
 import Banner from './banner/HeaderBanner'
+import SliderContainer from './horizontalSlider/slideContent'
+import FallbackImage from './fallback-image'
+import TestimonialCarousel from './testimonial'
 
 interface Props {
   children?: React.ReactNode
@@ -55,6 +58,16 @@ export default function HomeClient({ children }: Props) {
         className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]"
       >
         <Accordion />
+      </Section>
+
+      {/* Client Logos */}
+      <section className="relative">
+        <SliderContainer />
+      </section>
+
+      {/* Testimonials */}
+      <Section data-scroll-section className="my-24">
+        <TestimonialCarousel />
       </Section>
 
       <Section data-scroll-section>

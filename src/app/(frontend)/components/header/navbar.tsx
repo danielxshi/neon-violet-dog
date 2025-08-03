@@ -6,15 +6,22 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
+import { Button } from '@/components/ui/button'
+import BookNowButton from '../buttons/button'
 
 interface Props {
   siteName: string
 }
 
-const tempMenu = [
+interface MenuItem {
+  title: string
+  path: string
+}
+
+const tempMenu: MenuItem[] = [
   { title: 'Work', path: '/work' },
-  { title: 'Services', path: '/Services' },
-  { title: 'Pricing', path: '/ricing' },
+  { title: 'Services', path: '/services' },
+  { title: 'Pricing', path: '/pricing' },
   { title: 'Contact', path: '/contact' },
 ]
 
@@ -74,14 +81,14 @@ export default function NavbarClient({ siteName }: Props) {
         {/* Center menu */}
         <div className="flex justify-center w-1/3">
           <ul className="hidden sm:flex gap-6 text-sm font-medium">
-            {tempMenu.map((item) => (
+            {tempMenu.map((item: MenuItem) => (
               <li key={item.title}>
                 <Link href={item.path}>
                   <span
-                    className={`transition-colors ${
+                    className={`transition-all pb-1 ${
                       pathname === item.path
-                        ? ' dark:text-white'
-                        : 'text-white dark:text-neutral-400 hover:text-black dark:hover:text-white'
+                        ? 'text-white border-b-2 border-white'
+                        : 'text-white hover:text-black '
                     }`}
                   >
                     {item.title}
@@ -96,14 +103,15 @@ export default function NavbarClient({ siteName }: Props) {
 
         {/* Right Hamburger Icon */}
         <div className="flex justify-end w-1/3 items-center gap-4">
-          <a
+          {/* <a
             href="https://example.com/book-now" // Replace with the actual URL
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-block bg-black text-white px-4 py-2 rounded-sm text-xs font-medium hover:bg-blue-700 transition"
           >
             Book Now
-          </a>
+          </a> */}
+          <BookNowButton />
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-white focus:outline-none">
             <svg
