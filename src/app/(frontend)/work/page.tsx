@@ -1,42 +1,35 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 import clsx from 'clsx'
 import Banner from '../components/banner/HeaderBanner'
 import FallbackImage from '../components/fallback-image'
 
-const testimonials = [
-  {
-    id: 1,
-    image: '/images/project-1.jpg',
-    location: 'Burnaby, BC',
-    category: 'photo',
-  },
-  {
-    id: 2,
-    image: '/images/project-2.jpg',
-    location: 'Vancouver, BC',
-    category: 'video',
-  },
-  {
-    id: 3,
-    image: '/images/project-3.jpg',
-    location: 'Richmond, BC',
-    category: 'photo',
-  },
-  {
-    id: 4,
-    image: '/images/project-4.jpg',
-    location: 'Surrey, BC',
-    category: 'video',
-  },
-]
+interface Post {
+  id: string
+  heroImage?: {
+    url?: string
+  }
+  location?: string
+  category?: 'photo' | 'video'
+}
 
 export default function HomeClient() {
   const [activeFilter, setActiveFilter] = useState<'photo' | 'video'>('photo')
+  const [posts, setPosts] = useState<Post[]>([])
 
-  const filteredProjects = testimonials.filter((project) => project.category === activeFilter)
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await fetch('/api/posts')
+      const data = await res.json()
+      setPosts(data?.docs || [])
+    }
+
+    fetchPosts()
+  }, [])
+
+  const filteredProjects = posts.filter((post) => post.category === activeFilter)
 
   return (
     <main className="flex-1">
@@ -95,8 +88,8 @@ export default function HomeClient() {
             <div key={project.id} className="space-y-2">
               <div className="w-full aspect-[4/3] relative overflow-hidden rounded">
                 <FallbackImage
-                  src={project.image}
-                  alt={project.location}
+                  src={project.heroImage?.url || '/images/fallback.jpg'}
+                  alt={project.location || 'Project'}
                   layout="fill"
                   objectFit="cover"
                   className="transition-transform duration-500 hover:scale-105"

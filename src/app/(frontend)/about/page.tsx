@@ -14,7 +14,7 @@ export default function HomeClient({ children }: Props) {
         title="We're a multi-disciplinary Real Estate development firm focusing on developing properties that connect Nature, Architecture, Technology, and Functionality."
         url=""
         website="https://example.com"
-      ></Banner>
+      />
       <section className="relative">
         {/* Noise overlay */}
         {/* <div

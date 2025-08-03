@@ -20,6 +20,7 @@ export default function ClientShell({
   const [showAdminBar, setShowAdminBar] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Shop'
+
   useEffect(() => {
     if (pathname === '/') {
       const loaderTimeout = setTimeout(() => {
@@ -76,7 +77,7 @@ export default function ClientShell({
       </AnimatePresence>
       <main className="relative">
         {children}
-        <Footer />
+        {pathname !== '/contact' && <Footer />}
       </main>
     </>
   )

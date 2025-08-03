@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import FallbackImage from '../fallback-image'
 
 interface HeroBannerProps {
   image: string
@@ -19,7 +20,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
 }) => {
   return (
     <section className={`relative w-full ${height}`}>
-      <Image src={image} alt={title} fill className="object-cover z-0" priority />
+      <FallbackImage src={image} alt={title} fill className="object-cover z-0" priority />
       <div
         className="absolute inset-0 flex items-end *:ml-8"
         style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }}

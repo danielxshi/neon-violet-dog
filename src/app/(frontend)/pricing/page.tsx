@@ -1,59 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { AnimatePresence, motion } from 'framer-motion'
 import Banner from '../components/banner/ShortBanner'
-const categories = ['PACKAGE', 'PHOTO', 'VIDEO', 'MATTERPORT', 'FLOORPLAN', 'DRONE', 'REELS']
+import FallbackImage from '../components/fallback-image'
 
-const pricingData: Record<string, { title: string; price?: number; description?: string }[]> = {
-  VIDEO: [
-    {
-      title: 'Videography (Horizontal Version)',
-      price: 375,
-      description: `Additional Drone +$100\n4K Listing video of the property (60 - 180 seconds)\nAdditional $150 for Instagram Reel version. Also includes a complimentary drone.\nExtra $50 for community shots request\n(3 day turnaround time)\n1st video revision is free and $50 each revision after`,
-    },
-    {
-      title: 'PREMIUM Instagram Reel (Vertical Version) - VIRAL VIDEO',
-      price: 450,
-      description: `Comes with all the effects, 3D text fonts and trendy transitions`,
-    },
-    {
-      title: 'Basic Instagram Reel Only (Vertical Version)',
-      price: 325,
-      description: `$200 if added to regular video`,
-    },
-  ],
-  PHOTO: [
-    {
-      title: 'Standard Photo Package',
-      price: 200,
-      description: `25-35 professional real estate photos\nDelivered in 24 hours`,
-    },
-  ],
-  PACKAGE: [],
-  MATTERPORT: [],
-  FLOORPLAN: [],
-  DRONE: [],
-  REELS: [],
+type PricingItem = {
+  id: string
+  title: string
+  price?: number
+  description?: string
+  category: string
 }
+
+const categories = ['PACKAGE', 'PHOTO', 'VIDEO', 'MATTERPORT', 'FLOORPLAN', 'DRONE', 'REELS']
 
 export default function PricingPage() {
   const [selectedCategory, setSelectedCategory] = useState('VIDEO')
+  const [pricingData, setPricingData] = useState<Record<string, PricingItem[]>>({})
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/pricing?limit=100') // adjust the limit as needed
+        const data = await res.json()
+        const grouped: Record<string, PricingItem[]> = {}
+
+        for (const item of data.docs) {
+          const cat = item.category?.toUpperCase()
+          if (cat) {
+            if (!grouped[cat]) grouped[cat] = []
+            grouped[cat].push(item)
+          }
+        }
+
+        setPricingData(grouped)
+      } catch (error) {
+        console.error('Failed to load pricing data:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <main className="flex flex-col">
-      {/* Hero Banner */}
-      <Banner title="Services" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
+      <Banner title="Pricing" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
 
-      {/* About Section */}
       <section className="px-6 md:px-16 py-16 bg-white text-black grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
         <div className="flex justify-center">
-          <Image
+          <FallbackImage
             src="/images/michael.jpg"
             alt="Michael Gatasi"
             width={400}
             height={400}
-            className="rounded-lg object-cover"
+            className="rounded-sm object-cover"
           />
         </div>
         <div className="flex flex-col justify-center space-y-6">
@@ -74,7 +76,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section className="px-6 md:px-20 py-10">
         <div className="flex border-b border-gray-300 mb-10 text-sm font-semibold tracking-wide overflow-x-auto">
           {categories.map((cat) => (
@@ -92,27 +93,36 @@ export default function PricingPage() {
           ))}
         </div>
 
-        <div className="space-y-10">
-          {pricingData[selectedCategory]?.length > 0 ? (
-            pricingData[selectedCategory].map((item, i) => (
-              <div key={i}>
-                <div className="flex justify-between items-start">
-                  <h4 className="text-lg font-semibold max-w-xl">{item.title}</h4>
-                  {item.price !== undefined && (
-                    <p className="text-xl font-medium whitespace-nowrap">${item.price}</p>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={selectedCategory}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="space-y-10"
+          >
+            {pricingData[selectedCategory]?.length > 0 ? (
+              pricingData[selectedCategory].map((item) => (
+                <div key={item.id}>
+                  <div className="flex justify-between items-start">
+                    <h4 className="text-lg font-semibold max-w-xl">{item.title}</h4>
+                    {item.price !== undefined && (
+                      <p className="text-xl font-medium whitespace-nowrap">${item.price}</p>
+                    )}
+                  </div>
+                  {item.description && (
+                    <p className="text-sm mt-2 whitespace-pre-line max-w-3xl text-gray-700 leading-relaxed">
+                      {item.description}
+                    </p>
                   )}
                 </div>
-                {item.description && (
-                  <p className="text-sm mt-2 whitespace-pre-line max-w-3xl text-gray-700 leading-relaxed">
-                    {item.description}
-                  </p>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No pricing available for this category yet.</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No pricing available for this category yet.</p>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </section>
     </main>
   )
