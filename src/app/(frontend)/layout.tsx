@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import localFont from 'next/font/local'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -19,11 +18,30 @@ export const metadata: Metadata = {
   },
 }
 
+const montserratt = localFont({
+  src: [
+    {
+      path: '@/../public/fonts/montserrat/Montserrat-VariableFont_wght.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+})
+
+const montserrattBold = localFont({
+  src: [
+    {
+      path: '../fonts/montserrat/Montserrat-Bold.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+})
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html lang="en" className={cn(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
+    <html lang="en" className={`${montserratt.className}`}>
       <head>
         <InitTheme />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
