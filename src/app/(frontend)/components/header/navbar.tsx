@@ -8,14 +8,14 @@ import { usePathname } from 'next/navigation'
 import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
 import localFont from 'next/font/local'
 import BookNowButton from '../buttons/button'
-import useGsapMenu from './useGsapMenu'
 import styles from './style.module.scss'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import { CustomEase } from 'gsap/CustomEase'
+import Lenis from '@studio-freight/lenis'
 
-gsap.registerPlugin(SplitText, CustomEase)
 CustomEase.create('hop', '.87, 0, .13, 1')
+gsap.registerPlugin(SplitText, CustomEase)
 
 const dinamit = localFont({
   src: [
@@ -44,7 +44,100 @@ export default function NavbarClient() {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
 
-  const { overlayRef, contentRef, isOpen, toggleMenu } = useGsapMenu()
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const lenis = useRef<Lenis | null>(null)
+
+  useEffect(() => {
+    lenis.current = new Lenis()
+    const raf = (time: number) => {
+      lenis.current?.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+  }, [])
+
+  const toggleMenu = () => {
+    if (isAnimating) return
+    setIsAnimating(true)
+
+    const content = contentRef.current
+    const overlay = overlayRef.current
+
+    if (!content || !overlay) return
+
+    const linkEls = content.querySelectorAll('.menu-link')
+    const splitLines: SplitText[] = []
+
+    linkEls.forEach((el) => {
+      const split = new SplitText(el as HTMLElement, {
+        type: 'lines',
+        linesClass: 'line',
+      })
+      splitLines.push(split)
+      split.lines.forEach((line) => {
+        const wrapper = document.createElement('div')
+        wrapper.classList.add('line-mask')
+        wrapper.style.overflow = 'hidden'
+        wrapper.style.display = 'block'
+        line.parentNode?.insertBefore(wrapper, line)
+        wrapper.appendChild(line)
+      })
+    })
+
+    gsap.set(
+      splitLines.flatMap((split) => split.lines),
+      {
+        y: '-110%',
+        opacity: 1,
+        force3D: true,
+      },
+    )
+
+    const tl = gsap.timeline({ onComplete: () => setIsAnimating(false) })
+
+    if (!isOpen) {
+      lenis.current?.stop()
+
+      tl.to(
+        overlay,
+        {
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          duration: 1,
+          ease: 'hop',
+        },
+        0,
+      )
+
+      tl.to(
+        splitLines.flatMap((split) => split.lines),
+        {
+          y: '0%',
+          duration: 2,
+          ease: 'hop',
+          stagger: -0.075,
+        },
+        0.25,
+      )
+
+      tl.call(() => setIsOpen(true))
+    } else {
+      tl.to(
+        overlay,
+        {
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          duration: 1,
+          ease: 'hop',
+        },
+        0,
+      ).call(() => {
+        lenis.current?.start()
+        setIsOpen(false)
+      })
+    }
+  }
 
   useEffect(() => {
     setMounted(true)
@@ -54,58 +147,16 @@ export default function NavbarClient() {
     const handleScroll = () => {
       setHideNav(window.scrollY > 500)
     }
-
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  useEffect(() => {
-    if (!isOpen || !contentRef.current) return
-
-    const content = contentRef.current
-    const linkEls = content.querySelectorAll('.menu-link')
-
-    const splitLines: SplitText[] = []
-
-    linkEls.forEach((el) => {
-      const split = new SplitText(el as HTMLElement, {
-        type: 'lines',
-        linesClass: 'line',
-      })
-      splitLines.push(split)
-
-      split.lines.forEach((line) => {
-        const wrapper = document.createElement('div')
-        wrapper.classList.add('line-mask')
-        line.parentNode?.insertBefore(wrapper, line)
-        wrapper.appendChild(line)
-      })
-
-      gsap.set(split.lines, { y: '-110%' })
-    })
-
-    const tl = gsap.timeline()
-    tl.set(content, { opacity: 1 })
-    splitLines.forEach((split) => {
-      tl.to(
-        split.lines,
-        {
-          y: '0%',
-          duration: 1.2,
-          ease: 'hop',
-          stagger: 0.075,
-        },
-        0,
-      )
-    })
-  }, [isOpen])
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: hideNav ? -100 : 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`z-[999] absolute left-0 top-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
+      className={`z-[999] fixed left-0 top-0 w-full backdrop-blur-sm transition-colors duration-300 ${
         hideNav ? '' : 'bg-transparent'
       }`}
     >
@@ -183,15 +234,7 @@ export default function NavbarClient() {
 
             {tempMenu.map((item, idx) => (
               <Link key={item.title} href={item.path} onClick={toggleMenu}>
-                <span
-                  style={{
-                    clipPath: isOpen
-                      ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
-                      : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-                  }}
-                  className={`${styles.menuLink} menu-link`}
-                  data-index={idx}
-                >
+                <span className={`${styles.menuLink} menu-link`} data-index={idx}>
                   {item.title}
                 </span>
               </Link>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useSpring, useMotionValue, useTransform } from 'framer-motion'
+import { useSpring, useMotionValue } from 'framer-motion'
 import SliderContainer, { SliderItem } from './slider'
 import FallbackImage from '../fallback-image'
 
@@ -17,13 +17,21 @@ type Logo = {
 const ClientLogos: React.FC = () => {
   const [logos, setLogos] = useState<Logo[]>([])
 
-  const rows = [0, 1, 2]
-  const motionSpeeds = rows.map((i) =>
-    useSpring(useMotionValue(30 + i * 10), {
-      damping: 15,
-      stiffness: 150,
-    }),
-  )
+  // Define motion values at top level to comply with React rules
+  const speed0 = useSpring(useMotionValue(30), {
+    damping: 15,
+    stiffness: 150,
+  })
+  const speed1 = useSpring(useMotionValue(40), {
+    damping: 15,
+    stiffness: 150,
+  })
+  const speed2 = useSpring(useMotionValue(50), {
+    damping: 15,
+    stiffness: 150,
+  })
+
+  const motionSpeeds = [speed0, speed1, speed2]
 
   useEffect(() => {
     async function fetchLogos() {
@@ -53,7 +61,7 @@ const ClientLogos: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {rows.map((lineIndex) => (
+      {[0, 1, 2].map((lineIndex) => (
         <div
           key={lineIndex}
           onMouseEnter={() => handleHover(lineIndex, true)}

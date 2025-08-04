@@ -1,6 +1,14 @@
 .line-mask {
+  display: block;
   overflow: hidden;
+  height: auto;
 }
+.line {
+  display: block;
+  transform: translateY(0%); // GSAP will override this
+}
+
+
 
 .navRight {
   display: flex;
