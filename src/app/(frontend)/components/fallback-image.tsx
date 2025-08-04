@@ -19,8 +19,7 @@ export default function FallbackImage({
   fill,
   ...props
 }: FallbackImageProps) {
-  const fallback =
-    'https://nailcissist.com/cdn/shop/files/Untitled_design_b4accec6-a4b2-4f66-9d85-e4023ac11aa4.png?v=1751867630&width=900'
+  const fallback = 'https://images.pexels.com/photos/1109541/pexels-photo-1109541.jpeg'
 
   const [imgSrc, setImgSrc] = useState(src)
 

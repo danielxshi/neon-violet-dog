@@ -26,6 +26,16 @@ const nextConfig = {
         hostname: 'www.005f.agency',
         pathname: '/client-logos/bw/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.pexels.com',
+        pathname: '/photos/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com', // Added this entry
+        pathname: '/photos/**',
+      },
     ],
   },
   webpack: (webpackConfig) => {
