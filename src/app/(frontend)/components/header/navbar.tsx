@@ -49,6 +49,7 @@ export default function NavbarClient() {
   const [isOpen, setIsOpen] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const lenis = useRef<Lenis | null>(null)
+  const splitsRef = useRef<SplitText[]>([])
 
   useEffect(() => {
     lenis.current = new Lenis()
@@ -65,54 +66,54 @@ export default function NavbarClient() {
 
     const content = contentRef.current
     const overlay = overlayRef.current
-
     if (!content || !overlay) return
 
+    // Revert any previous splits
+    splitsRef.current.forEach((split) => split.revert())
+    splitsRef.current = []
+
     const linkEls = content.querySelectorAll('.menu-link')
-    const splitLines: SplitText[] = []
-
-    linkEls.forEach((el) => {
-      const split = new SplitText(el as HTMLElement, {
-        type: 'lines',
-        linesClass: 'line',
-      })
-      splitLines.push(split)
-      split.lines.forEach((line) => {
-        const wrapper = document.createElement('div')
-        wrapper.classList.add('line-mask')
-        wrapper.style.overflow = 'hidden'
-        wrapper.style.display = 'block'
-        line.parentNode?.insertBefore(wrapper, line)
-        wrapper.appendChild(line)
-      })
-    })
-
-    gsap.set(
-      splitLines.flatMap((split) => split.lines),
-      {
-        y: '-110%',
-        opacity: 1,
-        force3D: true,
-      },
-    )
-
-    const tl = gsap.timeline({ onComplete: () => setIsAnimating(false) })
 
     if (!isOpen) {
-      lenis.current?.stop()
+      // OPEN MENU
+      linkEls.forEach((el) => {
+        const split = new SplitText(el as HTMLElement, {
+          type: 'lines',
+          linesClass: 'line',
+        })
+        splitsRef.current.push(split)
 
-      tl.to(
-        overlay,
+        split.lines.forEach((line) => {
+          const wrapper = document.createElement('div')
+          wrapper.classList.add('line-mask')
+          wrapper.style.overflow = 'hidden'
+          wrapper.style.display = 'block'
+          line.parentNode?.insertBefore(wrapper, line)
+          wrapper.appendChild(line)
+        })
+      })
+
+      gsap.set(
+        splitsRef.current.flatMap((split) => split.lines),
         {
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          duration: 1,
-          ease: 'hop',
+          y: '-110%',
+          opacity: 1,
+          force3D: true,
         },
-        0,
       )
 
+      const tl = gsap.timeline({ onComplete: () => setIsAnimating(false) })
+
+      lenis.current?.stop()
+
+      tl.to(overlay, {
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        duration: 1,
+        ease: 'hop',
+      })
+
       tl.to(
-        splitLines.flatMap((split) => split.lines),
+        splitsRef.current.flatMap((split) => split.lines),
         {
           y: '0%',
           duration: 2,
@@ -124,17 +125,21 @@ export default function NavbarClient() {
 
       tl.call(() => setIsOpen(true))
     } else {
-      tl.to(
-        overlay,
-        {
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-          duration: 1,
-          ease: 'hop',
+      // CLOSE MENU
+      const tl = gsap.timeline({
+        onComplete: () => {
+          lenis.current?.start()
+          setIsOpen(false)
+          setIsAnimating(false)
+          splitsRef.current.forEach((split) => split.revert())
+          splitsRef.current = []
         },
-        0,
-      ).call(() => {
-        lenis.current?.start()
-        setIsOpen(false)
+      })
+
+      tl.to(overlay, {
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+        duration: 1,
+        ease: 'hop',
       })
     }
   }
@@ -156,7 +161,7 @@ export default function NavbarClient() {
       initial={{ y: -100 }}
       animate={{ y: hideNav ? -100 : 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`z-[999] fixed left-0 top-0 w-full backdrop-blur-sm transition-colors duration-300 ${
+      className={`z-[999] absolute left-0 top-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
         hideNav ? '' : 'bg-transparent'
       }`}
     >
