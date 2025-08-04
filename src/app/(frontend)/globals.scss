@@ -238,9 +238,10 @@ a {
   width: 0%;
   height: 100%;
   scale: 0.7;
-  background-color: #efefef;
+  background-color: #0f0f0f;
   clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);
   z-index: 1000;
+  color: white;
 }
 
 /* ---------------------------------
