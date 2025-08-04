@@ -71,7 +71,7 @@ export default function ClientShell({
             }}
             layout
           >
-            <NavbarClient siteName={siteName} />
+            <NavbarClient />
           </motion.div>
         )}
       </AnimatePresence>

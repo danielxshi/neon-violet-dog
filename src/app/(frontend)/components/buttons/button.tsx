@@ -1,11 +1,35 @@
 'use client'
 
-import React from 'react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import styles from './style.module.scss'
 
 export default function BookNowButton() {
   return (
-    <button className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white font-bold uppercase text-xs px-6 py-2 rounded-sm tracking-wide hover:opacity-90 transition-all">
-      Book Now
-    </button>
+    <Link href="/book">
+      <div className={styles.button}>
+        <motion.div
+          className={styles.slider}
+          initial={{ y: 0 }}
+          whileHover={{ y: '-50%' }}
+          transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        >
+          <div className={styles.el}>
+            <PerspectiveText label="Book Now" />
+          </div>
+          <div className={styles.el}>
+            <PerspectiveText label="Let's Go" />
+          </div>
+        </motion.div>
+      </div>
+    </Link>
+  )
+}
+
+function PerspectiveText({ label }: { label: string }) {
+  return (
+    <div className={styles.perspectiveText}>
+      <p>{label}</p>
+    </div>
   )
 }

@@ -1,0 +1,56 @@
+.navRight {
+  display: flex;
+  justify-content: flex-end;
+  width: 33.3333%;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hamburgerButton {
+  color: white;
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: currentColor;
+  }
+}
+
+.menuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 98;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  will-change: clip-path;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: white;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.menuLink {
+  font-size: 1.5rem;
+  font-weight: 600;
+}

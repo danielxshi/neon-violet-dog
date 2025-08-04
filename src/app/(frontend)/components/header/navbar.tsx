@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -8,6 +8,8 @@ import { usePathname } from 'next/navigation'
 import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
 import localFont from 'next/font/local'
 import BookNowButton from '../buttons/button'
+import useGsapMenu from './useGsapMenu'
+import styles from './style.module.scss'
 
 const dinamit = localFont({
   src: [
@@ -33,60 +35,49 @@ const tempMenu: MenuItem[] = [
 
 export default function NavbarClient() {
   const [hideNav, setHideNav] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
 
-  const [_scrollY, setScrollY] = useState(0)
+  const { overlayRef, contentRef, isOpen, toggleMenu } = useGsapMenu({ defaultOpen: false })
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY)
-      // You can also add other logic here based on scroll position
-      // For example, changing a header style when scrolled past a certain point
-      if (window.scrollY > 500) {
-        console.log('Scrolled past 100px')
-        setHideNav(true)
-      } else {
-        setHideNav(false)
-      }
+      setHideNav(window.scrollY > 500)
     }
 
-    // Add the event listener when the component mounts
     window.addEventListener('scroll', handleScroll)
-
-    // Clean up the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, []) // The empty dependency array ensures this effect runs only once on mount
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <motion.nav
       initial={{ y: -100 }}
-      animate={{ y: hideNav ? -100 : 0 }} // Correct syntax for Framer Motion
+      animate={{ y: hideNav ? -100 : 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`z-[999] absolute left-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
+      className={`z-[999] absolute left-0 top-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
         hideNav ? '' : 'bg-transparent'
       }`}
     >
-      <div className="flex items-center justify-between h-20 px-4 lg:px-8 w-[100vw]">
-        {/* Left Logo */}
+      <div className="flex items-center justify-between h-20 px-4 lg:px-8 w-full">
         <div className="flex items-center w-1/3 gap-4">
           <Link href="/">
             <Image
               className="cursor-pointer"
               src={Logo}
               alt="Be Clear Media Logo"
-              width={100} // Adjust width as needed
-              height={50} // Adjust height as needed
-              priority // Ensures the logo loads quickly
+              width={100}
+              height={50}
+              priority
             />
           </Link>
         </div>
 
-        {/* Center menu */}
         <div className="flex justify-center w-1/3">
-          <ul className="hidden sm:flex gap-6 text-sm ">
+          <ul className="hidden sm:flex gap-6 text-sm">
             {tempMenu.map((item: MenuItem) => (
               <li key={item.title}>
                 <Link href={item.path}>
@@ -94,7 +85,7 @@ export default function NavbarClient() {
                     className={`transition-all pb-1 ${dinamit.className} ${
                       pathname === item.path
                         ? 'text-white border-b-2 border-white'
-                        : 'text-white hover:text-blueGradient-start '
+                        : 'text-white hover:text-blueGradient-start'
                     }`}
                   >
                     {item.title}
@@ -105,15 +96,10 @@ export default function NavbarClient() {
           </ul>
         </div>
 
-        {/* Right Logo or Hamburger Icon */}
-
-        {/* Right Hamburger Icon */}
-        <div className="flex justify-end w-1/3 items-center gap-4">
+        <div className={styles.navRight}>
           <BookNowButton />
-
-          <button onClick={() => setMenuOpen(!menuOpen)} className="text-white focus:outline-none">
+          <button onClick={toggleMenu} className={styles.hamburgerButton} aria-label="Toggle Menu">
             <svg
-              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -123,34 +109,39 @@ export default function NavbarClient() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+                d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
               />
             </svg>
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="sm:hidden bg-white dark:bg-black absolute top-20 left-0 w-full shadow-lg">
-          <ul className="flex flex-col gap-4 p-4 text-sm font-medium">
-            {tempMenu.map((item) => (
-              <li key={item.title}>
-                <Link href={item.path}>
-                  <span
-                    className={`block transition-colors ${
-                      pathname === item.path
-                        ? 'dark:text-white'
-                        : 'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white'
-                    }`}
-                    onClick={() => setMenuOpen(false)} // Close menu on click
-                  >
-                    {item.title}
-                  </span>
-                </Link>
-              </li>
+      {mounted && (
+        <div
+          ref={overlayRef}
+          className={styles.menuOverlay}
+          style={{
+            clipPath: isOpen
+              ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
+              : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          }}
+        >
+          <div
+            ref={contentRef}
+            className={`flex flex-col items-center gap-6 ${styles.menuContent}`}
+          >
+            <button onClick={toggleMenu} className={styles.closeButton} aria-label="Close Menu">
+              ✕
+            </button>
+
+            {tempMenu.map((item, idx) => (
+              <Link key={item.title} href={item.path} onClick={toggleMenu}>
+                <span className={`${styles.menuLink} menu-link`} data-index={idx}>
+                  {item.title}
+                </span>
+              </Link>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </motion.nav>
