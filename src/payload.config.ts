@@ -13,6 +13,8 @@ import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import Pricing from './collections/Pricing'
 import Services from './collections/Services'
+import ClientLogos from './collections/ClientLogos'
+import HeadingBlock from './collections/HomeHeader'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -61,7 +63,17 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Pricing, Services, Users],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Pricing,
+    Services,
+    Users,
+    HeadingBlock,
+    ClientLogos,
+  ],
 
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],

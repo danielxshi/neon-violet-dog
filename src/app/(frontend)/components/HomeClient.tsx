@@ -6,34 +6,53 @@ import SectionLabel from '../../(frontend)/components/section/SectionLabel'
 import BigText from '../../(frontend)/components/section/BigText'
 import LogoContainer from '../../(frontend)/components/logo-container'
 import Accordion from './list/accordion/accordion'
-
+import { useState, useEffect } from 'react'
 import ZoomParallaxSection from './parallax/ZoomParallax'
 import News from './news'
 import Banner from './banner/HeaderBanner'
 import SliderContainer from './horizontalSlider/slideContent'
-import FallbackImage from './fallback-image'
 import TestimonialCarousel from './testimonial'
+import RichText from '@/components/RichText'
 
 interface Props {
   children?: React.ReactNode
 }
+type HeadingBlock = {
+  id: string
+  heading?: any // richText JSON
+}
 
 export default function HomeClient({ children }: Props) {
+  const [headingBlock, setHeadingBlock] = useState<HeadingBlock | null>(null)
+
+  useEffect(() => {
+    async function fetchHeadingBlock() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/heading-block?limit=1`)
+        const data = await res.json()
+        setHeadingBlock(data.docs?.[0] || null)
+      } catch (err) {
+        console.error('Failed to fetch heading block:', err)
+      }
+    }
+    fetchHeadingBlock()
+  }, [])
   return (
     <main className="flex-1">
-      <Banner
-        title="We're a multi-disciplinary Real Estate development firm focusing on developing properties that connect Nature, Architecture, Technology, and Functionality."
-        url=""
-        website="https://example.com"
-      ></Banner>
+      <Banner url="" website="https://example.com">
+        <h1 className=" font-montserrat normal-case">
+          {headingBlock?.heading && <RichText data={headingBlock.heading} />}
+        </h1>
+      </Banner>
+      {/* {headingBlock?.heading && <RichText data={headingBlock.heading} />} */}
       <section className="relative">
         {/* Noise overlay */}
-        {/* <div
+        <div
           className="absolute top-0 left-0 w-full h-[calc(100%+1px)] pointer-events-none z-[1]"
           style={{
             background: `url("https://www.gryphonliving.com/static/media/background_noise.735964358a992a7fe340.png"), linear-gradient(rgba(16, 27, 62, 0) 0%, rgb(16, 27, 62) 95%)`,
           }}
-        ></div> */}
+        ></div>
 
         <motion.div
           className="z-[10] w-full h-screen overflow-hidden"

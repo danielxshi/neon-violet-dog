@@ -5,6 +5,29 @@
 /* ---------------------------------
    BASE TYPOGRAPHY RESET
 ---------------------------------- */
+
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Thin.ttf') format('truetype');
+  font-weight: 300; /* Bold weight */
+  font-style: light;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400; /* Regular weight */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700; /* Bold weight */
+  font-style: normal;
+}
+
 @layer base {
   h1,
   h2,
@@ -242,6 +265,10 @@ a {
   font-weight: lighter;
   text-align: center;
   line-height: 100%;
+}
+
+h1 strong {
+  font-weight: 700;
 }
 
 .header h1 span {

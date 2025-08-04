@@ -22,6 +22,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        blueGradient: {
+          start: '#1E3A8A', // from
+          end: '#3B82F6', // to
+        },
         border: 'hsl(var(--border) / <alpha-value>)',
         background: 'hsl(var(--background) / <alpha-value>)',
         foreground: 'hsl(var(--foreground) / <alpha-value>)',
@@ -34,6 +38,9 @@ module.exports = {
         big: [getResponsiveValue(screens.sm, screens['2xl'], 30, 100), '1.075em'],
         articleHeader: [getResponsiveValue(screens.sm, screens['2xl'], 30, 48), '1.075em'],
         articleBody: [getResponsiveValue(screens.sm, screens['2xl'], 16, 24), '1.4em'],
+      },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
       },
       letterSpacing: {
         'big-text': '-0.02em',

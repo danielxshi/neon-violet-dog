@@ -6,12 +6,18 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
-import { Button } from '@/components/ui/button'
+import localFont from 'next/font/local'
 import BookNowButton from '../buttons/button'
 
-interface Props {
-  siteName: string
-}
+const dinamit = localFont({
+  src: [
+    {
+      path: '../../../../../public/fonts/dinamit/Dinamit_Regular_Trial_A.otf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+})
 
 interface MenuItem {
   title: string
@@ -25,12 +31,12 @@ const tempMenu: MenuItem[] = [
   { title: 'Contact', path: '/contact' },
 ]
 
-export default function NavbarClient({ siteName }: Props) {
+export default function NavbarClient() {
   const [hideNav, setHideNav] = useState(false)
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const [scrollY, setScrollY] = useState(0)
+  const [_scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,15 +86,15 @@ export default function NavbarClient({ siteName }: Props) {
 
         {/* Center menu */}
         <div className="flex justify-center w-1/3">
-          <ul className="hidden sm:flex gap-6 text-sm font-medium">
+          <ul className="hidden sm:flex gap-6 text-sm ">
             {tempMenu.map((item: MenuItem) => (
               <li key={item.title}>
                 <Link href={item.path}>
                   <span
-                    className={`transition-all pb-1 ${
+                    className={`transition-all pb-1 ${dinamit.className} ${
                       pathname === item.path
                         ? 'text-white border-b-2 border-white'
-                        : 'text-white hover:text-black '
+                        : 'text-white hover:text-blueGradient-start '
                     }`}
                   >
                     {item.title}
@@ -103,14 +109,6 @@ export default function NavbarClient({ siteName }: Props) {
 
         {/* Right Hamburger Icon */}
         <div className="flex justify-end w-1/3 items-center gap-4">
-          {/* <a
-            href="https://example.com/book-now" // Replace with the actual URL
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-block bg-black text-white px-4 py-2 rounded-sm text-xs font-medium hover:bg-blue-700 transition"
-          >
-            Book Now
-          </a> */}
           <BookNowButton />
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-white focus:outline-none">
