@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -10,6 +10,12 @@ import localFont from 'next/font/local'
 import BookNowButton from '../buttons/button'
 import useGsapMenu from './useGsapMenu'
 import styles from './style.module.scss'
+import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
+import { CustomEase } from 'gsap/CustomEase'
+
+gsap.registerPlugin(SplitText, CustomEase)
+CustomEase.create('hop', '.87, 0, .13, 1')
 
 const dinamit = localFont({
   src: [
@@ -38,7 +44,7 @@ export default function NavbarClient() {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
 
-  const { overlayRef, contentRef, isOpen, toggleMenu } = useGsapMenu({ defaultOpen: false })
+  const { overlayRef, contentRef, isOpen, toggleMenu } = useGsapMenu()
 
   useEffect(() => {
     setMounted(true)
@@ -52,6 +58,47 @@ export default function NavbarClient() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isOpen || !contentRef.current) return
+
+    const content = contentRef.current
+    const linkEls = content.querySelectorAll('.menu-link')
+
+    const splitLines: SplitText[] = []
+
+    linkEls.forEach((el) => {
+      const split = new SplitText(el as HTMLElement, {
+        type: 'lines',
+        linesClass: 'line',
+      })
+      splitLines.push(split)
+
+      split.lines.forEach((line) => {
+        const wrapper = document.createElement('div')
+        wrapper.classList.add('line-mask')
+        line.parentNode?.insertBefore(wrapper, line)
+        wrapper.appendChild(line)
+      })
+
+      gsap.set(split.lines, { y: '-110%' })
+    })
+
+    const tl = gsap.timeline()
+    tl.set(content, { opacity: 1 })
+    splitLines.forEach((split) => {
+      tl.to(
+        split.lines,
+        {
+          y: '0%',
+          duration: 1.2,
+          ease: 'hop',
+          stagger: 0.075,
+        },
+        0,
+      )
+    })
+  }, [isOpen])
 
   return (
     <motion.nav
@@ -136,7 +183,15 @@ export default function NavbarClient() {
 
             {tempMenu.map((item, idx) => (
               <Link key={item.title} href={item.path} onClick={toggleMenu}>
-                <span className={`${styles.menuLink} menu-link`} data-index={idx}>
+                <span
+                  style={{
+                    clipPath: isOpen
+                      ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
+                      : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+                  }}
+                  className={`${styles.menuLink} menu-link`}
+                  data-index={idx}
+                >
                   {item.title}
                 </span>
               </Link>
