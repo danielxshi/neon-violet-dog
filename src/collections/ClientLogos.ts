@@ -6,6 +6,9 @@ const ClientLogos: CollectionConfig = {
     useAsTitle: 'companyName',
     defaultColumns: ['companyName', 'logo'],
   },
+  access: {
+    read: () => true, // ✅ This line makes it publicly readable
+  },
   fields: [
     {
       name: 'companyName',
