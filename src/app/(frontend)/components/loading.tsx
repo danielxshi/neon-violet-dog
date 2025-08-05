@@ -97,7 +97,9 @@ export default function Loader() {
           <div className="overlay absolute inset-0 bg-black opacity-50 z-10"></div>
 
           <div className="header relative z-20 text-center space-y-4 py-12">
-            <h1 className={`${pragati.className} text-4xl uppercase text-white`}>BECLEAR</h1>
+            <h1 className={`${pragati.className} text-4xl uppercase text-white text-center`}>
+              BE CLEAR
+            </h1>
             <h1 style={{ fontSize: 28 }} className="text-sm tracking-wider text-white">
               MEDIA
             </h1>
