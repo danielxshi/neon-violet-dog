@@ -98,7 +98,7 @@ export default function Loader() {
 
           <div className="header relative z-20 text-center space-y-4 py-12">
             <h1 className={`${pragati.className} text-4xl uppercase text-white text-center`}>
-              BE CLEAR
+              BECLEAR
             </h1>
             <h1 style={{ fontSize: 28 }} className="text-sm tracking-wider text-white">
               MEDIA

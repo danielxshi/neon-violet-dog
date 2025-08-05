@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import Banner from '../components/banner/HeaderBanner'
 import FallbackImage from '../components/fallback-image'
+import RichText from '@/components/RichText'
 
 interface Post {
   id: string
@@ -31,13 +32,31 @@ export default function HomeClient() {
 
   const filteredProjects = posts.filter((post) => post.category === activeFilter)
 
+  type HeadingBlock = {
+    id: string
+    heading?: any // richText JSON
+  }
+
+  const [headingBlock, setHeadingBlock] = useState<HeadingBlock | null>(null)
+
+  useEffect(() => {
+    async function fetchHeadingBlock() {
+      try {
+        const res = await fetch('/api/heading-block?limit=1') // adjust the limit as needed
+        const data = await res.json()
+        setHeadingBlock(data.docs?.[0] || null)
+      } catch (err) {
+        console.error('Failed to fetch heading block:', err)
+      }
+    }
+    fetchHeadingBlock()
+  }, [])
+
   return (
     <main className="flex-1">
-      <Banner
-        title="We're a multi-disciplinary Real Estate development firm focusing on developing properties that connect Nature, Architecture, Technology, and Functionality."
-        url=""
-        website="https://example.com"
-      />
+      <Banner url="" website="https://example.com">
+        {headingBlock?.heading && <RichText data={headingBlock.heading} />}
+      </Banner>
 
       <section className="relative">
         <motion.div
