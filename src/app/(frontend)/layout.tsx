@@ -28,20 +28,11 @@ const montserratt = localFont({
   ],
 })
 
-const montserrattBold = localFont({
-  src: [
-    {
-      path: '../../../public/fonts/montserrat/Montserrat-Bold.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-  ],
-})
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html lang="en" className={`${montserratt.className}`}>
+    <html suppressHydrationWarning lang="en" className={`${montserratt.className}`}>
       <head>
         <InitTheme />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />

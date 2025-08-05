@@ -74,6 +74,8 @@ export interface Config {
     pricing: Pricing;
     services: Service;
     users: User;
+    'heading-block': HeadingBlock;
+    'client-logos': ClientLogo;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -92,6 +94,8 @@ export interface Config {
     pricing: PricingSelect<false> | PricingSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'heading-block': HeadingBlockSelect<false> | HeadingBlockSelect<true>;
+    'client-logos': ClientLogosSelect<false> | ClientLogosSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -774,6 +778,41 @@ export interface Service {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "heading-block".
+ */
+export interface HeadingBlock {
+  id: number;
+  heading: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-logos".
+ */
+export interface ClientLogo {
+  id: number;
+  companyName: string;
+  logo: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -972,6 +1011,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'heading-block';
+        value: number | HeadingBlock;
+      } | null)
+    | ({
+        relationTo: 'client-logos';
+        value: number | ClientLogo;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1368,6 +1415,25 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "heading-block_select".
+ */
+export interface HeadingBlockSelect<T extends boolean = true> {
+  heading?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-logos_select".
+ */
+export interface ClientLogosSelect<T extends boolean = true> {
+  companyName?: T;
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

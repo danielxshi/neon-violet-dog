@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob' // ✅ add this line
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -36,33 +37,21 @@ export default buildConfig({
     user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
-  editor: defaultLexical,
+
   db: vercelPostgresAdapter({
     pool: {
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
+
+  editor: defaultLexical,
+
   collections: [
     Pages,
     Posts,
@@ -75,17 +64,34 @@ export default buildConfig({
     ClientLogos,
   ],
 
-  cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
+
+  cors: [getServerSideURL()].filter(Boolean),
+
   plugins: [
     ...plugins,
-    // storage-adapter-placeholder
+
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [
+          vercelBlobStorage({
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+            clientUploads: true,
+            collections: {
+              [Media.slug]: true, // ✅ enable blob storage for Media collection
+            },
+          }),
+        ]
+      : []),
   ],
+
   secret: process.env.PAYLOAD_SECRET,
-  sharp,
+
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+
+  sharp,
+
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
