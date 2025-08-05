@@ -6,6 +6,9 @@ const Services: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'description'],
   },
+  access: {
+    read: () => true, // ✅ Enable public access
+  },
   fields: [
     {
       name: 'title',
