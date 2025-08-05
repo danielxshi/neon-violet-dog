@@ -28,7 +28,7 @@ export default function HomeClient({ children }: Props) {
   useEffect(() => {
     async function fetchHeadingBlock() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/heading-block?limit=1`)
+        const res = await fetch('/api/heading-block?limit=1') // adjust the limit as needed
         const data = await res.json()
         setHeadingBlock(data.docs?.[0] || null)
       } catch (err) {

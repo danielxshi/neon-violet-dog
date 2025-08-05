@@ -24,7 +24,7 @@ const ServiceList = () => {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/services?limit=100`)
+        const res = await fetch('/api/services?limit=100') // adjust the limit as needed
         const data = await res.json()
         setServices(data.docs)
       } catch (err) {
