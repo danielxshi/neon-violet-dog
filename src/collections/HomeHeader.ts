@@ -16,6 +16,9 @@ const HeadingBlock: CollectionConfig = {
     singular: 'Heading Block',
     plural: 'Heading Blocks',
   },
+  access: {
+    read: () => true, // ✅ Enables public access
+  },
   fields: [
     {
       name: 'heading',
