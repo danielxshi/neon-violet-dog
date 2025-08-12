@@ -89,16 +89,16 @@ export default function HomeClient({ children }: Props) {
         <TestimonialCarousel />
       </Section>
 
-      <Section data-scroll-section>
+      {/* <Section data-scroll-section>
         <SectionLabel>About Us</SectionLabel>
         <BigText data-scroll-speed="1.2">
           We partner with clients in financial services, electronic commerce, travel and tourism
           services, entertainment & infotainment, retail industries, CPG, and more.
         </BigText>
-      </Section>
+      </Section> */}
 
       {children}
-      <Section data-scroll-section className="bg-black my-24 py-24">
+      {/* <Section data-scroll-section className="bg-black my-24 py-24">
         <LogoContainer>
           {[
             'https://www.005f.agency/client-logos/bw/ap.png',
@@ -120,11 +120,11 @@ export default function HomeClient({ children }: Props) {
             </div>
           ))}
         </LogoContainer>
-      </Section>
+      </Section> */}
 
-      <Section data-scroll-section>
+      {/* <Section data-scroll-section>
         <News />
-      </Section>
+      </Section> */}
       <div className="relative h-[300vh] w-full">
         <div className="">
           <ZoomParallaxSection />

@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import Banner from '../components/banner/HeaderBanner'
 import FallbackImage from '../components/fallback-image'
 import RichText from '@/components/RichText'
+import Link from 'next/link'
 
 interface Post {
   id: string
@@ -14,6 +15,8 @@ interface Post {
   }
   location?: string
   category?: 'photo' | 'video'
+  slug: string
+  title: string
 }
 
 export default function HomeClient() {
@@ -104,7 +107,7 @@ export default function HomeClient() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {filteredProjects.map((project) => (
-            <div key={project.id} className="space-y-2">
+            <Link href={project.slug} key={project.id} className="space-y-2">
               <div className="w-full aspect-[4/3] relative overflow-hidden rounded">
                 <FallbackImage
                   src={project.heroImage?.url || '/images/fallback.jpg'}
@@ -114,12 +117,12 @@ export default function HomeClient() {
                   className="transition-transform duration-500 hover:scale-105"
                 />
               </div>
-              <div className="text-sm uppercase tracking-wide opacity-80">
-                {project.location}
+              <div className="text-sm uppercase tracking-wide opacity-80 project-content">
+                {project.title}
                 <br />
-                {project.category} category
+                {project.category} catalogue
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

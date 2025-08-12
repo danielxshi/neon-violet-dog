@@ -82,8 +82,8 @@ const LinkListItem: React.FC<LinkListItemProps> = ({ id, name, description, href
         <div className="reset-link cursor-pointer grid grid-cols-[2fr_8fr_1fr] md:grid-cols-[1fr_2fr_1fr] text-medium py-[1.2em] font-serif border-t border-[rgba(255,255,255,.17)]">
           <div className="font-mono font-light">{id}</div>
           <div>
-            <div>{name}</div>
-            {description && <div className="font-mono text-tiny mt-[.5em]">{description}</div>}
+            <h3>{name}</h3>
+            {description && <p className="font-mono text-tiny mt-[.5em]">{description}</p>}
           </div>
           <div className="ml-auto my-auto text-[1.2em]">
             <ArrowRightIcon isHovering={isHovering} />

@@ -61,7 +61,7 @@ const ClientLogos: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {[0, 1, 2].map((lineIndex) => (
+      {[0].map((lineIndex) => (
         <div
           key={lineIndex}
           onMouseEnter={() => handleHover(lineIndex, true)}

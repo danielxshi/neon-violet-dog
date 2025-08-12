@@ -149,7 +149,6 @@ body {
   height: 100%;
   background-color: $white !important;
   color: $black;
-  text-transform: uppercase;
   overflow-x: hidden;
   font-family: 'Montserrat', sans-serif;
 }

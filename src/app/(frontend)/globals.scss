@@ -6,7 +6,6 @@
    BASE TYPOGRAPHY RESET
 ---------------------------------- */
 
-
 @font-face {
   font-family: 'Montserrat';
   src: url('/fonts/montserrat/Montserrat-Thin.ttf') format('truetype');
@@ -45,6 +44,8 @@
 
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
   }
 }
 
@@ -163,7 +164,6 @@ body {
   min-height: 100vh;
   background-color: $white !important;
   color: $black;
-  text-transform: uppercase;
 }
 
 /* ---------------------------------
@@ -177,10 +177,11 @@ nav,
 button {
   backdrop-filter: blur(20px);
   z-index: 0;
+  text-transform: uppercase;
 }
 
 a {
-  color: $white;
+  // color: $white;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -268,6 +269,10 @@ a {
   line-height: 100%;
 }
 
+h3 {
+  font-family: Dinamit, sans-serif;
+}
+
 h1 strong {
   font-weight: 700;
 }
@@ -321,3 +326,8 @@ a.reset-link::after {
   visibility: hidden;
 }
 
+.project-content {
+  a {
+    color: black !important;
+  }
+}

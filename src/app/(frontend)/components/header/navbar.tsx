@@ -161,11 +161,11 @@ export default function NavbarClient() {
       initial={{ y: -100 }}
       animate={{ y: hideNav ? -100 : 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`z-[999] absolute left-0 top-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
+      className={`z-[999] absolute px-4 lg:px-8 max-w-[100vw] left-0 top-0 w-[100vw] backdrop-blur-sm transition-colors duration-300 ${
         hideNav ? '' : 'bg-transparent'
       }`}
     >
-      <div className="flex items-center justify-between h-20 px-4 lg:px-8 w-full">
+      <div className="flex items-center justify-between h-20  w-full">
         <div className="flex items-center w-1/3 gap-4">
           <Link href="/">
             <Image
@@ -179,7 +179,7 @@ export default function NavbarClient() {
           </Link>
         </div>
 
-        <div className="flex justify-center w-1/3">
+        <div className="hidden md:flex justify-center w-1/3">
           <ul className="hidden sm:flex gap-6 text-sm">
             {tempMenu.map((item: MenuItem) => (
               <li key={item.title}>
@@ -199,7 +199,7 @@ export default function NavbarClient() {
           </ul>
         </div>
 
-        <div className={styles.navRight}>
+        <div className={` ${styles.navRight}`}>
           <BookNowButton />
           <button onClick={toggleMenu} className={styles.hamburgerButton} aria-label="Toggle Menu">
             <svg

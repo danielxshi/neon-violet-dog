@@ -32,6 +32,8 @@ export default function FallbackImage({
       style={style}
       fill={fill}
       {...props}
+      width={props.width}
+      height={props.height}
     />
   )
 }
