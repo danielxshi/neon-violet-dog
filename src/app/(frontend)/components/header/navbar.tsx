@@ -13,6 +13,7 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import { CustomEase } from 'gsap/CustomEase'
 import Lenis from '@studio-freight/lenis'
+import FallbackImage from '../fallback-image'
 
 CustomEase.create('hop', '.87, 0, .13, 1')
 gsap.registerPlugin(SplitText, CustomEase)
@@ -59,6 +60,19 @@ export default function NavbarClient() {
     }
     requestAnimationFrame(raf)
   }, [])
+  const MenuToggle = ({
+    isOpen,
+    onClick,
+    className = '',
+  }: {
+    isOpen: boolean
+    onClick: () => void
+    className?: string
+  }) => {
+    // This function is unused and can be removed if not needed
+  }
+
+  const transition = { type: 'spring' as const, stiffness: 700, damping: 35 }
 
   const toggleMenu = () => {
     if (isAnimating) return
@@ -199,9 +213,9 @@ export default function NavbarClient() {
           </ul>
         </div>
 
-        <div className={` ${styles.navRight}`}>
+        <div className={` ${styles.navRight} gap-3`}>
           <BookNowButton />
-          <button onClick={toggleMenu} className={styles.hamburgerButton} aria-label="Toggle Menu">
+          {/* <button onClick={toggleMenu} className={styles.hamburgerButton} aria-label="Toggle Menu">
             <svg
               fill="none"
               stroke="currentColor"
@@ -215,38 +229,194 @@ export default function NavbarClient() {
                 d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
               />
             </svg>
-          </button>
+          </button> */}
+
+          <motion.button
+            type="button"
+            onClick={toggleMenu}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            className={` inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60`}
+            whileTap={{ scale: 0.96 }}
+          >
+            <motion.svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              initial={false}
+              animate={isOpen ? 'open' : 'closed'}
+              style={{ overflow: 'visible' }}
+            >
+              {/* top line */}
+              <motion.line
+                x1="4"
+                y1="7"
+                x2="20"
+                y2="7"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                variants={{
+                  closed: { y: 0, rotate: 0 },
+                  open: { y: 5, rotate: 45 },
+                }}
+                style={{ originX: 0.5, originY: 0.5 }}
+                transition={transition}
+              />
+              {/* middle line */}
+              <motion.line
+                x1="4"
+                y1="12"
+                x2="20"
+                y2="12"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                variants={{
+                  closed: { opacity: 1 },
+                  open: { opacity: 0 },
+                }}
+                transition={{ duration: 0.15 }}
+              />
+              {/* bottom line */}
+              <motion.line
+                x1="4"
+                y1="17"
+                x2="20"
+                y2="17"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                variants={{
+                  closed: { y: 0, rotate: 0 },
+                  open: { y: -5, rotate: -45 },
+                }}
+                style={{ originX: 0.5, originY: 0.5 }}
+                transition={transition}
+              />
+            </motion.svg>
+          </motion.button>
         </div>
       </div>
 
-      {mounted && (
+      {/* {mounted && ( */}
+      <div
+        ref={overlayRef}
+        className={`${styles.menuOverlay}  `}
+        style={{
+          clipPath: isOpen
+            ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
+            : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+        }}
+      >
         <div
-          ref={overlayRef}
-          className={styles.menuOverlay}
-          style={{
-            clipPath: isOpen
-              ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
-              : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-          }}
+          ref={contentRef}
+          className={`flex flex-col items-center gap-6 h-screen w-screen ${styles.menuContent}`}
         >
-          <div
-            ref={contentRef}
-            className={`flex flex-col items-center gap-6 ${styles.menuContent}`}
-          >
-            <button onClick={toggleMenu} className={styles.closeButton} aria-label="Close Menu">
-              ✕
+          <div className={`${styles.closeButton} flex items-start justify-end gap-3 p-6`}>
+            <Link
+              href="/contact"
+              className="rounded-full border border-white/20 px-4 py-2 text-sm hover:bg-white hover:text-black focus:outline-none"
+              // onClick={toggleMenu}
+            >
+              Neem contact op
+            </Link>
+            <button
+              aria-label="Close menu"
+              onClick={toggleMenu}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/30 hover:bg-white hover:text-black"
+            >
+              ×
             </button>
+          </div>
 
-            {tempMenu.map((item, idx) => (
-              <Link key={item.title} href={item.path} onClick={toggleMenu}>
-                <span className={`${styles.menuLink} menu-link`} data-index={idx}>
-                  {item.title}
+          {/* 2-column split: media left, menu right */}
+          <div className="grid h-full w-full grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+            {/* Left: hero image/video placeholder */}
+            <div className="relative hidden overflow-hidden lg:block">
+              <FallbackImage
+                src="/hero-placeholder.jpg"
+                alt="Showreel background"
+                fill
+                priority
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-black/0" />
+              {/* Play button + caption */}
+              <button
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-white backdrop-blur hover:bg-white/20 focus:outline-none"
+                onClick={() => {
+                  // hook up your modal/video logic here
+                }}
+                aria-label="Bekijk showreel"
+              >
+                <span className="grid h-8 w-8 place-items-center rounded-full border border-white/50">
+                  ▶
                 </span>
-              </Link>
-            ))}
+                <span className="text-sm tracking-wide">Bekijk showreel</span>
+              </button>
+            </div>
+
+            {/* Right: black panel */}
+            <aside className="relative flex w-full h-[500px] my-auto flex-col bg-black text-white">
+              {/* Top bar actions */}
+
+              {/* Main content grid */}
+              <div className="grid flex-1 grid-cols-12 px-6 pb-6 lg:px-12 lg:pb-10">
+                {/* Primary nav list */}
+                <nav className="col-span-12 row-span-1 self-start lg:col-span-8">
+                  <ul className="space-y-4 lg:space-y-5 flex flex-col">
+                    {tempMenu.map((item, idx) => (
+                      <Link
+                        key={item.title}
+                        href={item.path}
+                        // onClick={toggleMenu}
+                      >
+                        <span
+                          className={`${styles.menuLink} h-full w-full menu-link text-4xl font-semibold leading-tight tracking-tight hover:opacity-80 md:text-5xl`}
+                          data-index={idx}
+                        >
+                          {item.title}
+                        </span>
+                      </Link>
+                    ))}
+                  </ul>
+                </nav>
+
+                {/* Slim column descriptor list (right side) */}
+                <div className="col-span-12 mt-10 text-right text-neutral-300 lg:col-span-4 lg:mt-0">
+                  <ul className="space-y-3 italic">
+                    <li>Ontwerp</li>
+                    <li>Visualisatie</li>
+                    <li>Interactie</li>
+                  </ul>
+                </div>
+
+                {/* Bottom row */}
+                <div className="col-span-12 mt-auto flex items-end justify-between pt-10 text-sm text-neutral-300">
+                  <Link
+                    href="/en"
+                    // onClick={toggleMenu}
+                    className="hover:text-white"
+                  >
+                    English
+                  </Link>
+                  <div className="text-right">
+                    <div>+31 (0)26 2344 904</div>
+                    <div>
+                      <a href="mailto:mail@studiod.nu" className="hover:text-white">
+                        mail@studiod.nu
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* )} */}
     </motion.nav>
   )
 }
