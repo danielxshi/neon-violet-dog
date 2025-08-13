@@ -313,7 +313,7 @@ a {
 }
 
 .service-section {
-  * {
+  a {
     color: $black !important;
   }
 }
@@ -330,4 +330,12 @@ a.reset-link::after {
   a {
     color: black !important;
   }
+}
+
+/* paint isolation so the overlay anim doesn’t force repaint underneath */
+.menuOverlay { will-change: clip-path; contain: paint; }
+
+/* optional: pause CSS animations site-wide while menu is open (exclude overlay) */
+html.menu-open body :not(.menuOverlay *){
+  animation-play-state: paused !important;
 }

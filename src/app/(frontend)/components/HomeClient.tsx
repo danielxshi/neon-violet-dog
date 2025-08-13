@@ -76,11 +76,18 @@ export default function HomeClient({ children }: Props) {
         data-scroll-section
         className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]"
       >
+        <SectionLabel>EXPERTISES</SectionLabel>
+        <BigText data-scroll-speed="1.2">Service with excellence, award-winning results </BigText>
+
         <Accordion />
       </Section>
 
       {/* Client Logos */}
       <section className="relative">
+        <div className="*:mx-auto mb-8 flex w-full *:justify-items-center">
+          <SectionLabel>TRUSTED BY</SectionLabel>
+        </div>
+
         <SliderContainer />
       </section>
 
@@ -122,9 +129,9 @@ export default function HomeClient({ children }: Props) {
         </LogoContainer>
       </Section> */}
 
-      {/* <Section data-scroll-section>
+      <Section data-scroll-section>
         <News />
-      </Section> */}
+      </Section>
       <div className="relative h-[300vh] w-full">
         <div className="">
           <ZoomParallaxSection />

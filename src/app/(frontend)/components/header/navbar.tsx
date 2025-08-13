@@ -40,6 +40,15 @@ const tempMenu: MenuItem[] = [
   { title: 'Contact', path: '/contact' },
 ]
 
+const hamburgerMenu: MenuItem[] = [
+  { title: 'Home', path: '/' },
+  { title: 'Work', path: '/work' },
+  { title: 'About', path: '/about' },
+  { title: 'Services', path: '/services' },
+  { title: 'Pricing', path: '/pricing' },
+  { title: 'Contact', path: '/contact' },
+]
+
 export default function NavbarClient() {
   const [hideNav, setHideNav] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -319,7 +328,7 @@ export default function NavbarClient() {
               className="rounded-full border border-white/20 px-4 py-2 text-sm hover:bg-white hover:text-black focus:outline-none"
               // onClick={toggleMenu}
             >
-              Neem contact op
+              Contact Us
             </Link>
             <button
               aria-label="Close menu"
@@ -366,12 +375,8 @@ export default function NavbarClient() {
                 {/* Primary nav list */}
                 <nav className="col-span-12 row-span-1 self-start lg:col-span-8">
                   <ul className="space-y-4 lg:space-y-5 flex flex-col">
-                    {tempMenu.map((item, idx) => (
-                      <Link
-                        key={item.title}
-                        href={item.path}
-                        // onClick={toggleMenu}
-                      >
+                    {hamburgerMenu.map((item, idx) => (
+                      <Link key={item.title} href={item.path} onClick={toggleMenu}>
                         <span
                           className={`${styles.menuLink} h-full w-full menu-link text-4xl font-semibold leading-tight tracking-tight hover:opacity-80 md:text-5xl`}
                           data-index={idx}
@@ -384,28 +389,24 @@ export default function NavbarClient() {
                 </nav>
 
                 {/* Slim column descriptor list (right side) */}
-                <div className="col-span-12 mt-10 text-right text-neutral-300 lg:col-span-4 lg:mt-0">
+                {/* <div className="col-span-12 mt-10 text-right text-neutral-300 lg:col-span-4 lg:mt-0">
                   <ul className="space-y-3 italic">
                     <li>Ontwerp</li>
                     <li>Visualisatie</li>
                     <li>Interactie</li>
                   </ul>
-                </div>
+                </div> */}
 
                 {/* Bottom row */}
                 <div className="col-span-12 mt-auto flex items-end justify-between pt-10 text-sm text-neutral-300">
-                  <Link
-                    href="/en"
-                    // onClick={toggleMenu}
-                    className="hover:text-white"
-                  >
+                  <Link href="/en" onClick={toggleMenu} className="hover:text-white">
                     English
                   </Link>
                   <div className="text-right">
-                    <div>+31 (0)26 2344 904</div>
+                    <div>(604) 618-8641</div>
                     <div>
-                      <a href="mailto:mail@studiod.nu" className="hover:text-white">
-                        mail@studiod.nu
+                      <a href="mailto:info@beclearmedia.com" className="hover:text-white">
+                        info@beclearmedia.com
                       </a>
                     </div>
                   </div>

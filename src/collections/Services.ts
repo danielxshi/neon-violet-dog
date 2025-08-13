@@ -1,13 +1,18 @@
-import { CollectionConfig } from 'payload'
+import type { CollectionConfig } from 'payload'
 
 const Services: CollectionConfig = {
   slug: 'services',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'description'],
+    defaultColumns: ['title', 'description', 'heroImage'],
   },
   access: {
-    read: () => true, // ✅ Enable public access
+    read: () => true,
+  },
+  // populate uploads by default so `url` etc. are available without extra depth
+  defaultPopulate: {
+    heroImage: true,
+    gallery: { media: true },
   },
   fields: [
     {
@@ -26,7 +31,49 @@ const Services: CollectionConfig = {
       name: 'extendedDescription',
       label: 'Extended Description',
       type: 'textarea',
-      required: false,
+    },
+
+    // --- Images area ---
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Images',
+          fields: [
+            {
+              name: 'heroImage',
+              label: 'Hero Image',
+              type: 'upload',
+              relationTo: 'media', // uses your Media collection
+              admin: { description: 'Shown as the primary visual for this service.' },
+              filterOptions: {
+                mimeType: { contains: 'image/' }, // optional: restrict to images
+              },
+            },
+            {
+              name: 'gallery',
+              label: 'Gallery',
+              type: 'array',
+              labels: { singular: 'Media Item', plural: 'Gallery Items' },
+              fields: [
+                {
+                  name: 'media',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  filterOptions: {
+                    mimeType: { in: ['image/', 'video/'] }, // allow images or videos
+                  },
+                },
+                {
+                  name: 'caption',
+                  type: 'text',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
   ],
 }

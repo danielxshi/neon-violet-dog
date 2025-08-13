@@ -168,7 +168,7 @@ b {
 nav,
 button {
   border-radius: 10px;
-  backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(20px); */
   z-index: 0;
 }
 
@@ -178,9 +178,9 @@ a {
   transition: all 0.2s ease;
 }
 
-a:hover {
+/* a:hover {
   background: white !important;
-}
+} */
 
 .hamburger {
   position: relative;

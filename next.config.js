@@ -18,6 +18,21 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'images.squarespace-cdn.com',
+        pathname: '/content/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.beclearmedia.com',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.005f.agency',
+        pathname: '/cdn/shop/files/**',
+      },
+      {
+        protocol: 'https',
         hostname: '005f.agency',
         pathname: '/cdn/shop/files/**',
       },

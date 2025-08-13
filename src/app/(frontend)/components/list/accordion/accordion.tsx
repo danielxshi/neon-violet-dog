@@ -61,7 +61,7 @@ const ServiceList = () => {
         </AnimatePresence>
       </LinkList>
       {!isViewingFullList && (
-        <div className="mt-[.5em] flex justify-center md:justify-start md:pl-[25%] w-full">
+        <div className="mt-[1.5em] flex justify-center md:justify-start md:pl-[25%] w-full">
           <Button onClick={() => setIsViewingFullList(true)}>View More Services</Button>
         </div>
       )}

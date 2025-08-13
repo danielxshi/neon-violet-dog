@@ -33,6 +33,14 @@ const testimonials = [
     text: 'I had great pleasure working with Mike and the team over at Be Clear Media to prepare my listing. Mike works like a close team of in-house photographers and videographers to showcase our property. I was very impressed with their service and follow up. We are always looking for quick turn-over times as this market is fast paced. We are incredibly happy with the results and will continue to use Mike and his team.',
     image: '/images/Terry-Realtor.jpg',
   },
+  {
+    name: 'Terry Tea',
+    role: 'Marketing Director',
+    stats: ['+45%', '+60%'],
+    labels: ['Brand Reach', 'Lead Conversions'],
+    text: 'I had great pleasure working with Mike and the team over at Be Clear Media to prepare my listing. Mike works like a close team of in-house photographers and videographers to showcase our property. I was very impressed with their service and follow up. We are always looking for quick turn-over times as this market is fast paced. We are incredibly happy with the results and will continue to use Mike and his team.',
+    video: '/video/alpro-testimonial.mp4',
+  },
 ]
 
 export default function TestimonialCarousel() {
@@ -97,13 +105,29 @@ export default function TestimonialCarousel() {
             else if (info.offset.x > 100) paginate(-1)
           }}
         >
-          <FallbackImage
-            src={current.image}
-            alt={current.name}
-            layout="fill"
-            objectFit="cover"
-            priority={index === 0}
-          />
+          {current.image ? (
+            <FallbackImage
+              src={current.image}
+              alt={current.name}
+              layout="fill"
+              objectFit="cover"
+              priority={index === 0}
+            />
+          ) : current.video ? (
+            <video
+              key={`vid-${index}`}
+              className="absolute inset-0 w-full h-full object-cover"
+              src={current.video}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              // poster={current.poster ?? undefined} // optional
+            />
+          ) : (
+            <div className="absolute inset-0 bg-neutral-900" />
+          )}
         </motion.div>
       </AnimatePresence>
 

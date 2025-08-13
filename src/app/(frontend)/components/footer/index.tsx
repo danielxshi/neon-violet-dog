@@ -32,8 +32,8 @@ export default function Footer({ children }: { children?: React.ReactNode }) {
                 {/* Left block */}
                 <div className="space-y-4 md:col-span-6">
                   <div className="font-bold uppercase text-lg leading-relaxed">
-                    We would love to <br />
-                    <span className="text-white font-extrabold">hear from you.</span>
+                    Have a project? <br />
+                    <span className="text-white font-extrabold">Contact us</span>
                   </div>
                   <div>Become a client</div>
                   <div className="leading-relaxed">

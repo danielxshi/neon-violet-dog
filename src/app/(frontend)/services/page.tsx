@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
 import Section from '../components/section/Section'
 import Banner from '../components/banner/ShortBanner'
+import FallbackImage from '../components/fallback-image'
 
 type Service = {
   id: string
@@ -82,6 +83,13 @@ export default function Accordion() {
                     className="overflow-hidden text-sm text-black/70 max-w-3xl"
                   >
                     <p className="pt-2 whitespace-pre-line">{item.extendedDescription}</p>
+                    <FallbackImage
+                      src="https://images.squarespace-cdn.com/content/v1/64584eb1237e40538b7c4084/e525cdf7-9ac6-4b8d-b651-91ceea861ac9/IMG_8430.jpg"
+                      alt={item.title}
+                      width={400}
+                      height={400}
+                      className="mt-4 rounded-lg shadow-lg"
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>

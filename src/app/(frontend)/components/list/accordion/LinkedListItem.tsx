@@ -68,6 +68,7 @@ const LinkListItem: React.FC<LinkListItemProps> = ({ id, name, description, href
 
   return (
     <motion.div
+      className="border-b border-[rgba(0,0,0,.4)]"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       transition={{
@@ -83,7 +84,7 @@ const LinkListItem: React.FC<LinkListItemProps> = ({ id, name, description, href
           <div className="font-mono font-light">{id}</div>
           <div>
             <h3>{name}</h3>
-            {description && <p className="font-mono text-tiny mt-[.5em]">{description}</p>}
+            {description && <p className="font-roboto text-tiny mt-[.5em]">{description}</p>}
           </div>
           <div className="ml-auto my-auto text-[1.2em]">
             <ArrowRightIcon isHovering={isHovering} />

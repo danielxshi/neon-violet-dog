@@ -49,9 +49,9 @@ export default function PricingPage() {
       <Banner title="Pricing" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
 
       <section className="px-6 md:px-16 py-16 bg-white text-black grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
-        <div className="flex justify-center">
+        <div className="flex justify-center h-[450px] overflow-hidden">
           <FallbackImage
-            src="/images/michael.jpg"
+            src="https://images.squarespace-cdn.com/content/v1/64584eb1237e40538b7c4084/e525cdf7-9ac6-4b8d-b651-91ceea861ac9/IMG_8430.jpg"
             alt="Michael Gatasi"
             width={400}
             height={400}
