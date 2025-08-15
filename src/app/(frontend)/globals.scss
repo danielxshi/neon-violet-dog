@@ -42,8 +42,9 @@
     @apply border-border;
   }
 
+
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply min-h-[100vh] flex flex-col;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
   }
@@ -162,8 +163,8 @@ html,
 body {
   width: 100%;
   min-height: 100vh;
-  background-color: $white !important;
-  color: $black;
+  background-color: #0f0f0f;
+  color: $white;
 }
 
 /* ---------------------------------
@@ -314,7 +315,7 @@ a {
 
 .service-section {
   a {
-    color: $black !important;
+    // color: $black !important;
   }
 }
 
@@ -333,9 +334,12 @@ a.reset-link::after {
 }
 
 /* paint isolation so the overlay anim doesn’t force repaint underneath */
-.menuOverlay { will-change: clip-path; contain: paint; }
+.menuOverlay {
+  will-change: clip-path;
+  contain: paint;
+}
 
 /* optional: pause CSS animations site-wide while menu is open (exclude overlay) */
-html.menu-open body :not(.menuOverlay *){
+html.menu-open body :not(.menuOverlay *) {
   animation-play-state: paused !important;
 }

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
 import localFont from 'next/font/local'
 import BookNowButton from '../buttons/button'
@@ -51,8 +51,8 @@ const hamburgerMenu: MenuItem[] = [
 
 export default function NavbarClient() {
   const [hideNav, setHideNav] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   const overlayRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -69,21 +69,10 @@ export default function NavbarClient() {
     }
     requestAnimationFrame(raf)
   }, [])
-  const MenuToggle = ({
-    isOpen,
-    onClick,
-    className = '',
-  }: {
-    isOpen: boolean
-    onClick: () => void
-    className?: string
-  }) => {
-    // This function is unused and can be removed if not needed
-  }
 
   const transition = { type: 'spring' as const, stiffness: 700, damping: 35 }
 
-  const toggleMenu = () => {
+  const toggleMenu = (opts?: { onClosed?: () => void }) => {
     if (isAnimating) return
     setIsAnimating(true)
 
@@ -91,21 +80,16 @@ export default function NavbarClient() {
     const overlay = overlayRef.current
     if (!content || !overlay) return
 
-    // Revert any previous splits
     splitsRef.current.forEach((split) => split.revert())
     splitsRef.current = []
 
     const linkEls = content.querySelectorAll('.menu-link')
 
     if (!isOpen) {
-      // OPEN MENU
+      // OPEN
       linkEls.forEach((el) => {
-        const split = new SplitText(el as HTMLElement, {
-          type: 'lines',
-          linesClass: 'line',
-        })
+        const split = new SplitText(el as HTMLElement, { type: 'lines', linesClass: 'line' })
         splitsRef.current.push(split)
-
         split.lines.forEach((line) => {
           const wrapper = document.createElement('div')
           wrapper.classList.add('line-mask')
@@ -126,7 +110,6 @@ export default function NavbarClient() {
       )
 
       const tl = gsap.timeline({ onComplete: () => setIsAnimating(false) })
-
       lenis.current?.stop()
 
       tl.to(overlay, {
@@ -137,18 +120,13 @@ export default function NavbarClient() {
 
       tl.to(
         splitsRef.current.flatMap((split) => split.lines),
-        {
-          y: '0%',
-          duration: 2,
-          ease: 'hop',
-          stagger: -0.075,
-        },
+        { y: '0%', duration: 2, ease: 'hop', stagger: -0.075 },
         0.25,
       )
 
       tl.call(() => setIsOpen(true))
     } else {
-      // CLOSE MENU
+      // CLOSE
       const tl = gsap.timeline({
         onComplete: () => {
           lenis.current?.start()
@@ -156,6 +134,7 @@ export default function NavbarClient() {
           setIsAnimating(false)
           splitsRef.current.forEach((split) => split.revert())
           splitsRef.current = []
+          opts?.onClosed?.() // run callback after closing
         },
       })
 
@@ -167,9 +146,16 @@ export default function NavbarClient() {
     }
   }
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const handleMenuLink = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (isAnimating) {
+      e.preventDefault()
+      return
+    }
+    if (isOpen) {
+      e.preventDefault()
+      toggleMenu({ onClosed: () => router.push(href) })
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -204,7 +190,7 @@ export default function NavbarClient() {
 
         <div className="hidden md:flex justify-center w-1/3">
           <ul className="hidden sm:flex gap-6 text-sm">
-            {tempMenu.map((item: MenuItem) => (
+            {tempMenu.map((item) => (
               <li key={item.title}>
                 <Link href={item.path}>
                   <span
@@ -222,30 +208,14 @@ export default function NavbarClient() {
           </ul>
         </div>
 
-        <div className={` ${styles.navRight} gap-3`}>
+        <div className={`${styles.navRight} gap-3`}>
           <BookNowButton />
-          {/* <button onClick={toggleMenu} className={styles.hamburgerButton} aria-label="Toggle Menu">
-            <svg
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
-              />
-            </svg>
-          </button> */}
-
           <motion.button
             type="button"
-            onClick={toggleMenu}
+            onClick={() => toggleMenu()}
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isOpen}
-            className={` inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60`}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             whileTap={{ scale: 0.96 }}
           >
             <motion.svg
@@ -256,7 +226,6 @@ export default function NavbarClient() {
               animate={isOpen ? 'open' : 'closed'}
               style={{ overflow: 'visible' }}
             >
-              {/* top line */}
               <motion.line
                 x1="4"
                 y1="7"
@@ -265,14 +234,9 @@ export default function NavbarClient() {
                 stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
-                variants={{
-                  closed: { y: 0, rotate: 0 },
-                  open: { y: 5, rotate: 45 },
-                }}
-                style={{ originX: 0.5, originY: 0.5 }}
+                variants={{ closed: { y: 0, rotate: 0 }, open: { y: 5, rotate: 45 } }}
                 transition={transition}
               />
-              {/* middle line */}
               <motion.line
                 x1="4"
                 y1="12"
@@ -281,13 +245,9 @@ export default function NavbarClient() {
                 stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
-                variants={{
-                  closed: { opacity: 1 },
-                  open: { opacity: 0 },
-                }}
+                variants={{ closed: { opacity: 1 }, open: { opacity: 0 } }}
                 transition={{ duration: 0.15 }}
               />
-              {/* bottom line */}
               <motion.line
                 x1="4"
                 y1="17"
@@ -296,11 +256,7 @@ export default function NavbarClient() {
                 stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
-                variants={{
-                  closed: { y: 0, rotate: 0 },
-                  open: { y: -5, rotate: -45 },
-                }}
-                style={{ originX: 0.5, originY: 0.5 }}
+                variants={{ closed: { y: 0, rotate: 0 }, open: { y: -5, rotate: -45 } }}
                 transition={transition}
               />
             </motion.svg>
@@ -308,11 +264,11 @@ export default function NavbarClient() {
         </div>
       </div>
 
-      {/* {mounted && ( */}
       <div
         ref={overlayRef}
-        className={`${styles.menuOverlay}  `}
+        className={styles.menuOverlay}
         style={{
+          pointerEvents: isOpen ? 'auto' : 'none',
           clipPath: isOpen
             ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
             : 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
@@ -325,23 +281,21 @@ export default function NavbarClient() {
           <div className={`${styles.closeButton} flex items-start justify-end gap-3 p-6`}>
             <Link
               href="/contact"
+              onClick={(e) => handleMenuLink(e, '/contact')}
               className="rounded-full border border-white/20 px-4 py-2 text-sm hover:bg-white hover:text-black focus:outline-none"
-              // onClick={toggleMenu}
             >
               Contact Us
             </Link>
             <button
               aria-label="Close menu"
-              onClick={toggleMenu}
+              onClick={() => toggleMenu()}
               className="grid h-9 w-9 place-items-center rounded-full border border-white/30 hover:bg-white hover:text-black"
             >
               ×
             </button>
           </div>
 
-          {/* 2-column split: media left, menu right */}
           <div className="grid h-full w-full grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
-            {/* Left: hero image/video placeholder */}
             <div className="relative hidden overflow-hidden lg:block">
               <FallbackImage
                 src="/hero-placeholder.jpg"
@@ -351,32 +305,18 @@ export default function NavbarClient() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-black/0" />
-              {/* Play button + caption */}
-              <button
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-white backdrop-blur hover:bg-white/20 focus:outline-none"
-                onClick={() => {
-                  // hook up your modal/video logic here
-                }}
-                aria-label="Bekijk showreel"
-              >
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-white/50">
-                  ▶
-                </span>
-                <span className="text-sm tracking-wide">Bekijk showreel</span>
-              </button>
             </div>
 
-            {/* Right: black panel */}
             <aside className="relative flex w-full h-[500px] my-auto flex-col bg-black text-white">
-              {/* Top bar actions */}
-
-              {/* Main content grid */}
               <div className="grid flex-1 grid-cols-12 px-6 pb-6 lg:px-12 lg:pb-10">
-                {/* Primary nav list */}
-                <nav className="col-span-12 row-span-1 self-start lg:col-span-8">
+                <nav className="col-span-12 lg:col-span-8">
                   <ul className="space-y-4 lg:space-y-5 flex flex-col">
                     {hamburgerMenu.map((item, idx) => (
-                      <Link key={item.title} href={item.path} onClick={toggleMenu}>
+                      <Link
+                        key={item.title}
+                        href={item.path}
+                        onClick={(e) => handleMenuLink(e, item.path)}
+                      >
                         <span
                           className={`${styles.menuLink} h-full w-full menu-link text-4xl font-semibold leading-tight tracking-tight hover:opacity-80 md:text-5xl`}
                           data-index={idx}
@@ -388,18 +328,12 @@ export default function NavbarClient() {
                   </ul>
                 </nav>
 
-                {/* Slim column descriptor list (right side) */}
-                {/* <div className="col-span-12 mt-10 text-right text-neutral-300 lg:col-span-4 lg:mt-0">
-                  <ul className="space-y-3 italic">
-                    <li>Ontwerp</li>
-                    <li>Visualisatie</li>
-                    <li>Interactie</li>
-                  </ul>
-                </div> */}
-
-                {/* Bottom row */}
                 <div className="col-span-12 mt-auto flex items-end justify-between pt-10 text-sm text-neutral-300">
-                  <Link href="/en" onClick={toggleMenu} className="hover:text-white">
+                  <Link
+                    href="/en"
+                    onClick={(e) => handleMenuLink(e, '/en')}
+                    className="hover:text-white"
+                  >
                     English
                   </Link>
                   <div className="text-right">
@@ -416,8 +350,6 @@ export default function NavbarClient() {
           </div>
         </div>
       </div>
-
-      {/* )} */}
     </motion.nav>
   )
 }

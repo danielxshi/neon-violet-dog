@@ -1,59 +1,56 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import clsx from 'clsx'
 import Banner from '../components/banner/HeaderBanner'
 import FallbackImage from '../components/fallback-image'
 import RichText from '@/components/RichText'
 import Link from 'next/link'
+// import test from "../../../../public/video/testimonial.av1.webm"
 
 interface Post {
   id: string
-  heroImage?: {
-    url?: string
-  }
+  heroImage?: { url?: string }
   location?: string
   category?: 'photo' | 'video'
   slug: string
   title: string
+  previewVideoUrl?: string
 }
+
+type HeadingBlock = { id: string; heading?: any }
+
+const FALLBACK_PREVIEW = '../../../../public/video/testimonial.av1.webm' // file must exist in /public/video
 
 export default function HomeClient() {
   const [activeFilter, setActiveFilter] = useState<'photo' | 'video'>('photo')
   const [posts, setPosts] = useState<Post[]>([])
+  const [headingBlock, setHeadingBlock] = useState<HeadingBlock | null>(null)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const prefersReduced = useReducedMotion()
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    ;(async () => {
       const res = await fetch('/api/posts')
       const data = await res.json()
       setPosts(data?.docs || [])
-    }
-
-    fetchPosts()
+    })()
   }, [])
 
-  const filteredProjects = posts.filter((post) => post.category === activeFilter)
-
-  type HeadingBlock = {
-    id: string
-    heading?: any // richText JSON
-  }
-
-  const [headingBlock, setHeadingBlock] = useState<HeadingBlock | null>(null)
-
   useEffect(() => {
-    async function fetchHeadingBlock() {
+    ;(async () => {
       try {
-        const res = await fetch('/api/heading-block?limit=1') // adjust the limit as needed
+        const res = await fetch('/api/heading-block?limit=1')
         const data = await res.json()
         setHeadingBlock(data.docs?.[0] || null)
       } catch (err) {
         console.error('Failed to fetch heading block:', err)
       }
-    }
-    fetchHeadingBlock()
+    })()
   }, [])
+
+  const filteredProjects = posts.filter((p) => p.category === activeFilter)
 
   return (
     <main className="flex-1">
@@ -79,7 +76,7 @@ export default function HomeClient() {
         </motion.div>
       </section>
 
-      <section className="px-6 md:px-16 py-20">
+      <section className="px-6 py-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-6 text-lg font-semibold">
             <button
@@ -105,27 +102,90 @@ export default function HomeClient() {
           <div className="text-sm tracking-wider uppercase">Works ({filteredProjects.length})</div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {filteredProjects.map((project) => (
-            <Link href={project.slug} key={project.id} className="space-y-2">
-              <div className="w-full aspect-[4/3] relative overflow-hidden rounded">
-                <FallbackImage
-                  src={project.heroImage?.url || '/images/fallback.jpg'}
-                  alt={project.location || 'Project'}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-              <div className="text-sm uppercase tracking-wide opacity-80 project-content">
-                {project.title}
-                <br />
-                {project.category} catalogue
-              </div>
-            </Link>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {filteredProjects.map((project) => {
+            const previewSrc = project.previewVideoUrl || FALLBACK_PREVIEW
+            const hasVideo = Boolean(previewSrc)
+            const isHovered = hoveredId === project.id
+            const isActive = hasVideo && isHovered && !prefersReduced
+
+            return (
+              <Link
+                href={project.slug}
+                key={project.id}
+                className="space-y-2 group"
+                onMouseEnter={() => setHoveredId(project.id)}
+                onMouseLeave={() => setHoveredId((id) => (id === project.id ? null : id))}
+                onFocus={() => setHoveredId(project.id)}
+                onBlur={() => setHoveredId((id) => (id === project.id ? null : id))}
+              >
+                <div className="w-full aspect-square relative overflow-hidden rounded-[1px]">
+                  <motion.div
+                    className="absolute inset-0"
+                    initial={false}
+                    animate={{ scale: isActive ? 1.02 : 1, opacity: isActive ? 0 : 1 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <FallbackImage
+                      src={project.heroImage?.url || '/images/fallback.jpg'}
+                      alt={project.location || 'Project'}
+                      fill
+                      className="object-cover"
+                    />
+                  </motion.div>
+
+                  {hasVideo && (
+                    <HoverVideo
+                      src="https://player.vimeo.com/progressive_redirect/playback/838386999/rendition/720p/file.mp4?loc=external&log_user=0&signature=776cddfad94830fa3fcb98d0ac080d53d04db6e6cadf2d72d4215c7ee1c1c1b4"
+                      active={isActive}
+                    />
+                  )}
+                </div>
+
+                <div className="text-sm uppercase tracking-wide opacity-80 project-content">
+                  <small className="leading-none">{project.title}</small>
+                  <br />
+                  <p className="leading-none">{project.category} catalogue</p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </section>
     </main>
+  )
+}
+
+function HoverVideo({ src, active }: { src: string; active: boolean }) {
+  const ref = useRef<HTMLVideoElement | null>(null)
+
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    if (active) {
+      if (v.preload !== 'auto') v.preload = 'auto'
+      v.currentTime = 0
+      const p = v.play()
+      p?.catch(() => {})
+    } else {
+      v.pause()
+      v.currentTime = 0
+    }
+  }, [active])
+
+  return (
+    <motion.video
+      ref={ref}
+      src={src} // must be '/video/...' (public) or an absolute URL
+      muted
+      playsInline
+      loop
+      preload="metadata"
+      className="absolute inset-0 w-full h-full object-cover"
+      initial={{ opacity: 0, scale: 1.04 }}
+      animate={{ opacity: active ? 1 : 0, scale: active ? 1 : 1.04 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      style={{ willChange: 'opacity, transform' }}
+    />
   )
 }

@@ -48,7 +48,7 @@ export default function PricingPage() {
     <main className="flex flex-col">
       <Banner title="Pricing" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
 
-      <section className="px-6 md:px-16 py-16 bg-white text-black grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
+      <section className="px-6 md:px-16 py-16 grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
         <div className="flex justify-center h-[450px] overflow-hidden">
           <FallbackImage
             src="https://images.squarespace-cdn.com/content/v1/64584eb1237e40538b7c4084/e525cdf7-9ac6-4b8d-b651-91ceea861ac9/IMG_8430.jpg"
