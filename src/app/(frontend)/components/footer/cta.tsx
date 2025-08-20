@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, Variants, cubicBezier } from 'framer-motion'
 import Link from 'next/link'
 import localFont from 'next/font/local'
 import clsx from 'clsx'
@@ -21,7 +21,11 @@ const dinamit = localFont({
 export default function CTASection() {
   const prefersReducedMotion = useReducedMotion()
 
-  const textVariants = {
+  // Reusable cubic-bezier eases
+  const easeOutExpo = cubicBezier(0.22, 1, 0.36, 1)
+  const easeStandard = cubicBezier(0.76, 0, 0.24, 1)
+
+  const textVariants: Variants = {
     rest: {
       fill: 'rgba(255,255,255,0)',
       stroke: 'rgba(255,255,255,1)',
@@ -39,12 +43,12 @@ export default function CTASection() {
         },
   }
 
-  const underlineVariants = {
+  const underlineVariants: Variants = {
     rest: { scaleX: 0, opacity: 0 },
     hover: {
       scaleX: 1,
       opacity: 1,
-      transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.05 },
+      transition: { duration: 0.45, ease: easeOutExpo, delay: 0.05 },
     },
   }
 
@@ -62,7 +66,7 @@ export default function CTASection() {
         onError={(e) => console.warn('Video failed to load', e)}
         initial={{ opacity: 0, scale: 1.02 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ delay: 0.8, duration: 1, ease: easeOutExpo }}
       >
         {/* AV1 (best size/quality) */}
         <source src="/video/testimonial.av1.webm" type='video/webm; codecs="av01"' />
@@ -70,8 +74,6 @@ export default function CTASection() {
         <source src="/video/testimonial.vp9.webm" type='video/webm; codecs="vp9,opus"' />
         {/* Universal fallback (H.264) */}
         <source src="/video/testimonial.mp4" type='video/mp4; codecs="avc1.42E01E,mp4a.40.2"' />
-        {/* Optional: controls help debug autoplay issues */}
-        {/* Your browser does not support the video tag. */}
       </motion.video>
 
       {/* noise + gradient overlay */}
@@ -131,7 +133,7 @@ export default function CTASection() {
           <motion.span
             className="text-white/95 rounded-full px-4 py-2 shadow-lg"
             whileHover={{ opacity: 0.85 }}
-            transition={{ duration: 0.25, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.25, ease: easeStandard }}
           >
             Designed by BECLEARDESIGN
           </motion.span>

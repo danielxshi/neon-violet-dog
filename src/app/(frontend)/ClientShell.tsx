@@ -8,13 +8,7 @@ import NavbarClient from './components/header/navbar'
 import Footer from './components/footer'
 import Lenis from '@studio-freight/lenis'
 
-export default function ClientShell({
-  children,
-  preview,
-}: {
-  children: React.ReactNode
-  preview: boolean
-}) {
+export default function ClientShell({ children }: { children: React.ReactNode; preview: boolean }) {
   const pathname = usePathname()
   const [showLoader, setShowLoader] = useState(pathname === '/')
   const [showAdminBar, setShowAdminBar] = useState(false)
@@ -47,7 +41,7 @@ export default function ClientShell({
       duration: prefersReduced ? 0.6 : 1.2,
       easing: (t: number) => 1 - Math.pow(1 - t, 3), // easeOutCubic
       smoothWheel: true,
-      smoothTouch: false,
+      // smoothTouch: false, // Removed as it's not a valid property
       wheelMultiplier: 1,
       // lerp is alternative; avoid mixing with duration for consistency
     })
