@@ -6,7 +6,7 @@ import styles from './style.module.scss'
 
 export default function BookNowButton() {
   return (
-    <Link href="/book">
+    <Link href="https://beclearmedia.as.me/schedule/6d555a9d">
       <div className={`${styles.button} rounded-full`}>
         <motion.div
           className={styles.slider}

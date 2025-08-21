@@ -1,86 +1,106 @@
-// src/app/(frontend)/[slug]/page.tsx
-export const runtime = 'nodejs'
-
-import type { Metadata, ResolvingMetadata } from 'next'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
+import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
+import configPromise from '@payload-config'
+import FallbackImage from '@/app/(frontend)/components/fallback-image'
+import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { cache } from 'react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { generateMeta } from '@/utilities/generateMeta'
+import Banner from '../components/banner/ShortBanner'
 
-function normalizeSlug(raw: unknown): string | undefined {
-  if (typeof raw === 'string') return raw.trim()
-  if (raw && typeof raw === 'object') {
-    const r = raw as any
-    if (typeof r.current === 'string') return r.current.trim()
-    if (typeof r.value === 'string') return r.value.trim()
-    if (typeof r.slug === 'string') return r.slug.trim()
-  }
-  return undefined
-}
+type Post = RequiredDataFromCollectionSlug<'posts'>
 
-export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  const payload = await getPayload({ config })
-  const { docs = [] } = await payload.find({
-    collection: 'pages',
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'posts',
     draft: false,
     limit: 1000,
     pagination: false,
     select: { slug: true },
-    overrideAccess: false,
   })
-
-  const slugs = Array.from(
-    new Set(
-      docs.map((d: any) => normalizeSlug(d?.slug)).filter((s): s is string => !!s && s.length > 0),
-    ),
-  )
-
-  return slugs.map((slug) => ({ slug }))
+  return docs?.map(({ slug }) => ({ slug })) ?? []
 }
 
-// TEMPORARY: use `any` here to bypass your bad global PageProps constraint.
-// After you fix the global type (see section 2), change `any` to:
-//   { params: { slug: string } }
-export default async function Page({ params }: any) {
-  const slug: string = params?.slug
-  const page = await queryPageBySlug({ slug })
-  if (!page) notFound()
+type Args = { params: Promise<{ slug: string }> }
 
-  // Render something minimal; replace with your real component
+export default async function PostPage({ params: paramsPromise }: Args) {
+  const { slug } = await paramsPromise
+  const post = await queryPostBySlug({ slug })
+  if (!post) notFound()
+
+  const gallery = Array.isArray(post.mediaGallery) ? post.mediaGallery : []
+
   return (
-    <main className="container py-10">
-      <h1 className="text-3xl font-bold">{page.title ?? slug}</h1>
-      {/* add your rich text/content component here */}
-    </main>
+    <div>
+      <Banner
+        title={post.title}
+        subtitle="Be Clear Media"
+        image={
+          post.heroImage &&
+          typeof post.heroImage === 'object' &&
+          'url' in post.heroImage &&
+          post.heroImage.url
+            ? post.heroImage.url
+            : ''
+        }
+      />
+
+      <LivePreviewListener />
+
+      {/* <div className="mt-8">
+        <RichText data={post.content} />
+      </div> */}
+
+      {gallery.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 mt-12">
+          {gallery.map((item: any, i: number) => {
+            const file = item?.media
+            if (!file || typeof file !== 'object' || !('url' in file)) return null
+            const url = file.url as string
+            const mime = (file as any).mimeType as string | undefined
+            const isVideo = !!mime && mime.startsWith('video/')
+            return (
+              <div key={i}>
+                {isVideo ? (
+                  <video controls className="w-full rounded">
+                    <source src={url} type={mime} />
+                  </video>
+                ) : (
+                  <FallbackImage
+                    src={url}
+                    alt={item?.caption ?? ''}
+                    className="w-full rounded object-cover"
+                  />
+                )}
+                {item?.caption && <p className="text-sm opacity-70 mt-1">{item.caption}</p>}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
   )
 }
 
-export async function generateMetadata(
-  { params }: any,
-  _parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const slug: string = params?.slug
-  const page = await queryPageBySlug({ slug })
-  return {
-    title: page?.title ?? slug,
-    description:
-      page && typeof page === 'object' && 'excerpt' in page
-        ? String((page as any).excerpt)
-        : undefined,
-  }
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { slug } = await paramsPromise
+  const post = await queryPostBySlug({ slug })
+  return generateMeta({ doc: post })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: isDraft } = await draftMode()
-  const payload = await getPayload({ config })
-  const res = await payload.find({
-    collection: 'pages',
-    draft: isDraft,
+const queryPostBySlug = cache(async ({ slug }: { slug: string }): Promise<Post | null> => {
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config: configPromise })
+  const result = await payload.find({
+    collection: 'posts',
+    draft,
     limit: 1,
     pagination: false,
-    overrideAccess: isDraft,
+    overrideAccess: draft, // preview can bypass read access
+    depth: 2, // populate heroImage and mediaGallery.media
     where: { slug: { equals: slug } },
   })
-  return res.docs?.[0] ?? null
+  return (result.docs?.[0] as Post) ?? null
 })

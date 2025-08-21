@@ -298,7 +298,7 @@ export default function NavbarClient() {
           <div className="grid h-full w-full grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
             <div className="relative hidden overflow-hidden lg:block">
               <FallbackImage
-                src="/hero-placeholder.jpg"
+                src="/images/testimonial/DJI_0295.webp"
                 alt="Showreel background"
                 fill
                 priority

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import Banner from '../components/banner/ShortBanner'
 import FallbackImage from '../components/fallback-image'
@@ -45,9 +44,10 @@ export default function PricingPage() {
   }, [])
 
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col bg-white text-black">
       <Banner title="Pricing" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
 
+      {/* Intro Section */}
       <section className="px-6 md:px-16 py-16 grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
         <div className="flex justify-center h-[450px] overflow-hidden">
           <FallbackImage
@@ -76,7 +76,9 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
       <section className="px-6 md:px-20 py-10">
+        {/* Tabs */}
         <div className="flex border-b border-gray-300 mb-10 text-sm font-semibold tracking-wide overflow-x-auto">
           {categories.map((cat) => (
             <button
@@ -93,6 +95,7 @@ export default function PricingPage() {
           ))}
         </div>
 
+        {/* Category Pricing */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={selectedCategory}
@@ -102,6 +105,11 @@ export default function PricingPage() {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-10"
           >
+            {/* Section Label */}
+            <h3 className="text-2xl font-semibold border-b pb-2 mb-6">
+              {selectedCategory} PRICING
+            </h3>
+
             {pricingData[selectedCategory]?.length > 0 ? (
               pricingData[selectedCategory].map((item) => (
                 <div key={item.id}>

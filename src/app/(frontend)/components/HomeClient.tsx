@@ -106,11 +106,12 @@ export default function HomeClient({ children }: Props) {
           transition={{ duration: 3.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <video
-            src="https://player.vimeo.com/progressive_redirect/playback/838386999/rendition/720p/file.mp4?loc=external&log_user=0&signature=776cddfad94830fa3fcb98d0ac080d53d04db6e6cadf2d72d4215c7ee1c1c1b4"
+            src="/images/banner-video-be-clear.av1.webm"
             autoPlay
             loop
             muted
             playsInline
+            controls={false}
             className="object-cover w-full h-full"
           />
         </motion.div>

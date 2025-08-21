@@ -66,11 +66,12 @@ export default function HomeClient() {
           transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <video
-            src="https://player.vimeo.com/progressive_redirect/playback/838386999/rendition/720p/file.mp4?loc=external&log_user=0&signature=776cddfad94830fa3fcb98d0ac080d53d04db6e6cadf2d72d4215c7ee1c1c1b4"
+            src="/images/banner-video-be-clear.av1.webm"
             autoPlay
             loop
             muted
             playsInline
+            controls={false}
             className="object-cover w-full h-full"
           />
         </motion.div>
@@ -123,7 +124,7 @@ export default function HomeClient() {
                   <motion.div
                     className="absolute inset-0"
                     initial={false}
-                    animate={{ scale: isActive ? 1.02 : 1, opacity: isActive ? 0 : 1 }}
+                    animate={{ scale: isActive ? 1.02 : 1, opacity: isActive ? 0.8 : 1 }}
                     transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <FallbackImage
@@ -134,12 +135,12 @@ export default function HomeClient() {
                     />
                   </motion.div>
 
-                  {hasVideo && (
+                  {/* {hasVideo && (
                     <HoverVideo
                       src="https://player.vimeo.com/progressive_redirect/playback/838386999/rendition/720p/file.mp4?loc=external&log_user=0&signature=776cddfad94830fa3fcb98d0ac080d53d04db6e6cadf2d72d4215c7ee1c1c1b4"
                       active={isActive}
                     />
-                  )}
+                  )} */}
                 </div>
 
                 <div className="text-sm uppercase tracking-wide opacity-80 project-content">

@@ -88,7 +88,7 @@ export default function CTASection() {
 
       {/* CTA (entire overlay is the link target) */}
       <Link
-        href="/book"
+        href="https://beclearmedia.as.me/schedule/6d555a9d"
         aria-label="Book now"
         className={clsx('group absolute inset-0 z-20 grid place-items-center', dinamit.variable)}
       >
@@ -128,7 +128,7 @@ export default function CTASection() {
       </Link>
 
       {/* badges */}
-      <div className="absolute bottom-4 left-0 md:right-4 z-30 ">
+      <div className="absolute bottom-4 left-0 md:left-auto md:right-4 z-30 ">
         <Link href="https://instagram.com/beclearmedia" target="_blank" rel="noopener noreferrer">
           <motion.span
             className="text-white/95 rounded-full px-4 py-2 shadow-lg"

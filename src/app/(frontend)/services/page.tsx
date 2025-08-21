@@ -8,17 +8,26 @@ import Section from '../components/section/Section'
 import Banner from '../components/banner/ShortBanner'
 import FallbackImage from '../components/fallback-image'
 
+type Media = {
+  id?: string
+  url?: string
+  alt?: string
+  filename?: string
+}
+
 type Service = {
   id: string
   title: string
   description: string
   extendedDescription?: string
+  heroImage?: Media | null
 }
 
 export default function Accordion() {
   const [services, setServices] = useState<Service[]>([])
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const prefersReduced = useReducedMotion()
+
   const toggle = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx)
   }
@@ -26,10 +35,13 @@ export default function Accordion() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        // const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/services?limit=100`)
-        const res = await fetch('/api/services?limit=100') // adjust the limit as needed
+        // Depth ensures heroImage is populated even if defaultPopulate is bypassed
+        const res = await fetch('/api/services?limit=100&depth=2', {
+          headers: { Accept: 'application/json' },
+          cache: 'no-store',
+        })
         const data = await res.json()
-        setServices(data.docs)
+        setServices(data.docs ?? [])
       } catch (err) {
         console.error('Failed to fetch services:', err)
       }
@@ -39,7 +51,11 @@ export default function Accordion() {
 
   return (
     <main>
-      <Banner title="Services" subtitle="Be Clear Media" image="" />
+      <Banner
+        title="Services"
+        subtitle="Be Clear Media"
+        image="/images/team/be-clear-team-colored.webp"
+      />
       <Section
         data-scroll-section
         className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]"
@@ -51,14 +67,14 @@ export default function Accordion() {
           </h3>
 
           {services.map((item, idx) => (
-            <div key={item.id} className="border-t border-black/20 pt-6">
+            <div key={item.id} className="border-t border-white/50 pt-6">
               <button
                 onClick={() => toggle(idx)}
                 className="flex items-center justify-between w-full text-left"
               >
                 <div>
                   <h4 className="text-xl md:text-2xl font-medium">{item.title}</h4>
-                  <p className="text-sm  max-w-3xl">{item.description}</p>
+                  <p className="text-sm max-w-3xl">{item.description}</p>
                 </div>
                 <ChevronDown
                   className={clsx(
@@ -67,58 +83,51 @@ export default function Accordion() {
                   )}
                 />
               </button>
+
               <AnimatePresence initial={false}>
-                {openIndex === idx && item.extendedDescription && (
+                {openIndex === idx && (
                   <motion.div
                     key="content"
-                    initial="collapsed"
-                    animate="open"
-                    exit="collapsed"
-                    variants={{
-                      open: { opacity: 1, height: 'auto' },
-                      collapsed: { opacity: 0, height: 0 },
-                    }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden pt-8  text-sm flex md:flex-row flex-col justify-between md:w-4/5"
+                    // ⬇️ remove height variants; just animate opacity + translate
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className="pt-8 text-sm flex md:flex-row flex-col justify-between md:w-4/5"
                   >
                     <div className="w-full md:w-1/2 pr-8">
-                      <p className="whitespace-pre-line">{item.extendedDescription}</p>
+                      {item.extendedDescription ? (
+                        <p className="whitespace-pre-line">{item.extendedDescription}</p>
+                      ) : (
+                        <p className="opacity-70">More details coming soon.</p>
+                      )}
                     </div>
 
                     {/* Masked image reveal */}
                     <motion.div
                       key="masked-image"
-                      initial={{
-                        clipPath: 'inset(0 100% 0 0 round 12px)', // hidden from right
-                      }}
-                      animate={{
-                        clipPath: 'inset(0 0% 0 0 round 12px)', // fully revealed
-                      }}
-                      exit={{
-                        clipPath: 'inset(0 100% 0 0 round 12px)',
-                      }}
-                      transition={{
-                        duration: prefersReduced ? 0 : 1.1,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      style={{ willChange: 'clip-path' }}
-                      className="relative mt-4 md:mt-0 md:ml-6 rounded-lg shadow-lg overflow-hidden w-full md:w-1/2"
+                      initial={{ clipPath: 'inset(0 100% 0 0)' }}
+                      animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                      exit={{ clipPath: 'inset(0 100% 0 0)' }}
+                      transition={{ duration: prefersReduced ? 0 : 1.0, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative mt-4 md:mt-0 md:ml-6 shadow-lg overflow-hidden w-full md:w-1/2"
                     >
                       <motion.div
-                        initial={{ scale: 1.06, filter: 'blur(8px)' }}
-                        animate={{ scale: 1, filter: 'blur(0px)' }}
-                        exit={{ scale: 1.02, filter: 'blur(4px)' }}
+                        // ⬇️ transforms run on GPU; avoid filter (paint-heavy) for smoother perf
+                        initial={{ scale: 1.04 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 1.01 }}
                         transition={{
-                          duration: prefersReduced ? 0 : 1.1,
+                          duration: prefersReduced ? 0 : 0.9,
                           ease: [0.22, 1, 0.36, 1],
                         }}
-                        className="w-full h-[500px]"
+                        className="w-full h-[300px] transform-gpu"
                       >
                         <FallbackImage
-                          src="https://images.squarespace-cdn.com/content/v1/64584eb1237e40538b7c4084/e525cdf7-9ac6-4b8d-b651-91ceea861ac9/IMG_8430.jpg"
-                          alt={item.title}
+                          src={item.heroImage?.url || '/images/fallback.jpg'}
+                          alt={item.heroImage?.alt || item.title}
                           fill
-                          className="object-cover"
+                          className="object-contain object-top"
                           priority={false}
                         />
                       </motion.div>
