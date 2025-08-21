@@ -197,7 +197,7 @@ export default function NavbarClient() {
                     className={`transition-all pb-1 ${dinamit.className} ${
                       pathname === item.path
                         ? 'text-white border-b-2 border-white'
-                        : 'text-white hover:text-blueGradient-start'
+                        : 'text-white hover:opacity-80'
                     }`}
                   >
                     {item.title}
@@ -208,7 +208,7 @@ export default function NavbarClient() {
           </ul>
         </div>
 
-        <div className={`${styles.navRight} gap-3`}>
+        <div className={`${styles.navRight} gap-3 md:w-1/3 w-3/4`}>
           <BookNowButton />
           <motion.button
             type="button"

@@ -1,13 +1,12 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
 import Section from '../../(frontend)/components/section/Section'
 import SectionLabel from '../../(frontend)/components/section/SectionLabel'
 import BigText from '../../(frontend)/components/section/BigText'
 import Accordion from './list/accordion/accordion'
 import ZoomParallaxSection from './parallax/ZoomParallax'
-import News from './news'
 import Banner from './banner/HeaderBanner'
 import SliderContainer from './horizontalSlider/slideContent'
 import TestimonialCarousel from './testimonial'
@@ -21,32 +20,52 @@ type HeadingBlock = { id: string; heading?: any }
 export default function HomeClient({ children }: Props) {
   const [headingBlock, setHeadingBlock] = useState<HeadingBlock | null>(null)
 
+  // 1) Your existing overlay fade for the hero video
   const { scrollY } = useScroll()
-  // Overlay still fades mostly out by 600px
   const overlayOpacity = useTransform(scrollY, [0, 600], [1, 0])
-  // 0 → 1 progress we’ll use to blend body color
-  const bgProgress = useTransform(scrollY, [1500, 1800], [0, 1])
 
-  // Smoothly blend body background from #101B3E to #FFFFFF as you scroll
+  // 2) Smooth background/text transition BEFORE we hit the trusted-by section
+  const trustedRef = useRef<HTMLDivElement | null>(null)
+  // Progress goes 0 -> 1 as the top of #trusted-by moves from 90% to 40% of viewport height
+  const { scrollYProgress: trustedProgress } = useScroll({
+    target: trustedRef,
+    offset: ['start 90%', 'start 40%'],
+  })
+  // Spring for buttery easing
+  const themeProgress = useSpring(trustedProgress, { stiffness: 120, damping: 20, mass: 0.3 })
+
   useEffect(() => {
-    const start = { r: 0, g: 0, b: 0 } // #101B3E
-    const end = { r: 255, g: 255, b: 255 } // #FFFFFF
+    const dark = { r: 0, g: 0, b: 0 }
+    const light = { r: 255, g: 255, b: 255 }
 
-    const unsub = bgProgress.on('change', (t) => {
-      const clamp = (n: number) => Math.min(1, Math.max(0, n))
-      const u = clamp(t)
-      const r = Math.round(start.r + (end.r - start.r) * u)
-      const g = Math.round(start.g + (end.g - start.g) * u)
-      const b = Math.round(start.b + (end.b - start.b) * u)
+    const prev = {
+      bg: document.body.style.backgroundColor,
+      color: document.body.style.color,
+      transition: document.body.style.transition,
+    }
+    document.body.style.transition = 'background-color 200ms linear, color 200ms linear'
+
+    const unsub = themeProgress.on('change', (t) => {
+      // background: black -> white
+      const r = Math.round(dark.r + (light.r - dark.r) * t)
+      const g = Math.round(dark.g + (light.g - dark.g) * t)
+      const b = Math.round(dark.b + (light.b - dark.b) * t)
       document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+
+      // text: white -> near-black
+      const txt = Math.round(255 - 215 * t) // ends ~#1A1A1A for good contrast
+      document.body.style.color = `rgb(${txt}, ${txt}, ${txt})`
     })
 
     return () => {
       unsub()
-      document.body.style.backgroundColor = ''
+      document.body.style.backgroundColor = prev.bg
+      document.body.style.color = prev.color
+      document.body.style.transition = prev.transition
     }
-  }, [bgProgress])
+  }, [themeProgress])
 
+  // Fetch heading
   useEffect(() => {
     ;(async () => {
       try {
@@ -61,19 +80,24 @@ export default function HomeClient({ children }: Props) {
 
   return (
     <main className="flex-1">
-      <Banner url="" website="https://example.com">
-        <h1 className="font-montserrat normal-case">
-          {headingBlock?.heading && <RichText data={headingBlock.heading} />}
-        </h1>
-      </Banner>
+      {/* HERO */}
+      <section id="hero" aria-label="Hero">
+        <Banner url="" website="https://example.com">
+          <h1 className="font-montserrat normal-case">
+            {headingBlock?.heading && <RichText data={headingBlock.heading} />}
+          </h1>
+        </Banner>
+      </section>
 
-      <section className="relative">
+      {/* REEL / VIDEO */}
+      <section id="reel" aria-label="Showreel video" className="relative">
         <motion.div
           style={{
             opacity: overlayOpacity,
-            background: `linear-gradient(rgba(16, 27, 62, 0) 0%, rgb(16, 27, 62) 95%)`,
+            background: 'linear-gradient(rgba(0,0,0,0) 0%, rgb(0,0,0) 95%)',
           }}
           className="fixed top-0 left-0 w-full h-[100vh] pointer-events-none z-[1]"
+          aria-hidden
         />
         <motion.div
           className="z-[10] w-full h-screen overflow-hidden"
@@ -92,32 +116,44 @@ export default function HomeClient({ children }: Props) {
         </motion.div>
       </section>
 
-      <Section className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]">
+      {/* SERVICES */}
+      <Section
+        id="services"
+        aria-labelledby="services-label"
+        className="service-section overflow-hidden mx-auto w-[90vw] my-[20vh]"
+      >
         <SectionLabel>EXPERTISES</SectionLabel>
         <BigText data-scroll-speed="1.2">Service with excellence, award-winning results</BigText>
         <Accordion />
       </Section>
 
-      <section className="relative">
-        <div className="*:mx-auto mb-8 flex w-full *:justify-items-center text-black">
+      {/* TRUSTED BY / LOGOS — this drives the transition */}
+      <section
+        id="trusted-by"
+        aria-labelledby="trusted-by-label"
+        className="relative"
+        ref={trustedRef}
+      >
+        <div className="*:mx-auto mb-8 flex w-full *:justify-items-center text-inherit">
           <SectionLabel>TRUSTED BY</SectionLabel>
         </div>
         <SliderContainer />
       </section>
 
-      <Section className="my-24">
+      {/* TESTIMONIALS */}
+      <Section id="testimonials" className="my-24" aria-label="Testimonials">
         <TestimonialCarousel />
       </Section>
 
-      {children}
+      {/* EXTRA (children) */}
+      <section id="extra" aria-label="Additional content">
+        {children}
+      </section>
 
-      <Section>
-        <News />
-      </Section>
-
-      <div className="relative h-[300vh] w-full">
+      {/* PARALLAX FEATURE */}
+      <section id="parallax" aria-label="Parallax feature" className="relative h-[300vh] w-full">
         <ZoomParallaxSection />
-      </div>
+      </section>
     </main>
   )
 }

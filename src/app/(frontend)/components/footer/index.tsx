@@ -11,7 +11,7 @@ export default function Footer({ children }: { children?: React.ReactNode }) {
       style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}
     >
       <div className="fixed bottom-0 h-[200vh] w-full">
-        <div className="flex flex-col w-full md:flex-row justify-between h-full px-8 md:px-20 pb-40 text-white font-light">
+        <div className="flex flex-col w-full md:flex-row justify-between h-full px-8 md:px-20 pb-20 md:pb-40 text-white font-light">
           {/* Left: Branding and Contact */}
           <div className="flex flex-col space-y-6 mt-auto mb-0 w-full">
             <footer className="bg-black text-white px-6 space-y-12">
@@ -30,7 +30,7 @@ export default function Footer({ children }: { children?: React.ReactNode }) {
               {/* Main footer grid */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-10 text-sm pt-12">
                 {/* Left block */}
-                <div className="space-y-4 md:col-span-6">
+                <div className="space-y-4 col-span-12 md:col-span-6">
                   <div className="font-bold uppercase text-lg leading-relaxed">
                     Have a project? <br />
                     <span className="text-white font-extrabold">Contact us</span>
@@ -44,7 +44,7 @@ export default function Footer({ children }: { children?: React.ReactNode }) {
                   </div>
                 </div>
 
-                <div className="col-start-[-1] col-span-6 flex flex-col md:flex-row gap-x-16 space-y-6 md:space-y-0">
+                <div className="md:col-start-[-1] col-start-1 col-span-12 md:col-span-6 flex flex-col md:flex-row gap-x-16 space-y-6 md:space-y-0">
                   {/* Address */}
                   <div className="space-y-4 *:space-y-4">
                     <div className="font-semibold">Our Address</div>
