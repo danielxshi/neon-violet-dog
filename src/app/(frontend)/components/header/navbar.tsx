@@ -329,13 +329,13 @@ export default function NavbarClient() {
                 </nav>
 
                 <div className="col-span-12 mt-auto flex items-end justify-between pt-10 text-sm text-neutral-300">
-                  <Link
+                  {/* <Link
                     href="/en"
                     onClick={(e) => handleMenuLink(e, '/en')}
                     className="hover:text-white"
                   >
                     English
-                  </Link>
+                  </Link> */}
                   <div className="text-right">
                     <div>(604) 618-8641</div>
                     <div>
