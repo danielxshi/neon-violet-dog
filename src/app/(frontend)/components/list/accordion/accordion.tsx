@@ -53,7 +53,7 @@ const ServiceList = () => {
                     id={String(index + 1)}
                     name={item.title}
                     description={item.description}
-                    href={`/services/${item.id}`}
+                    href={`/services`}
                   />
                 </DelayMotion>
               ),

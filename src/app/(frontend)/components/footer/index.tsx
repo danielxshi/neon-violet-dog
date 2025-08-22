@@ -7,13 +7,13 @@ import Logo from '../../../../../public/images/BE CLEAR MEDIA-logo.png'
 export default function Footer({ children }: { children?: React.ReactNode }) {
   return (
     <div
-      className="relative h-[240vh] sm:h-[200vh] bg-black"
+      className="relative h-[200vh] bg-black"
       style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}
     >
-      <div className="fixed bottom-0 h-[240vh] sm:h-[200vh] w-full">
-        <div className="flex flex-col w-full md:flex-row justify-between h-full px-4 sm:px-8 md:px-20 pb-12 sm:pb-20 md:pb-40 text-white font-light">
+      <div className="fixed bottom-0 h-[200vh] w-full">
+        <div className="flex flex-col w-full md:flex-row justify-between h-full px-4 sm:px-8 md:px-20 pb-10 sm:pb-20 md:pb-40 text-white font-light">
           {/* Left: Branding and Contact */}
-          <div className="flex flex-col space-y-2 mt-auto mb-0 w-full">
+          <div className="flex flex-col space-y-2 mt-auto mb-8 sm:mt-auto sm:mb-0 w-full">
             <footer className="bg-black text-white px-6 md:space-y-12 space-y-4">
               {/* Top logo */}
               <Link href="/">

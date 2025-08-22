@@ -66,14 +66,23 @@ export default function HomeClient() {
           transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <video
-            src="/images/banner-video-be-clear.av1.webm"
             autoPlay
             loop
             muted
-            playsInline
             controls={false}
+            playsInline
+            preload="auto"
             className="object-cover w-full h-full"
-          />
+          >
+            {/* Chrome/Firefox/Edge */}
+            <source src="/images/banner-video-be-clear.av1.webm" type="video/webm" />
+            <source src="/images/banner-video-be-clear.vp9.webm" type="video/webm" />
+            {/* Universal fallback (must be real H.264) */}
+            <source src="/images/banner-video-be-clear.h264.mp4" type="video/mp4" />
+            {/* Optional (not ideal for web) */}
+            <source src="/images/banner-video-be-clear.mov" type="video/quicktime" />
+            Your browser does not support the video tag.
+          </video>
         </motion.div>
       </section>
 
