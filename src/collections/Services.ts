@@ -4,7 +4,7 @@ const Services: CollectionConfig = {
   slug: 'services',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'description', 'heroImage'],
+    defaultColumns: ['title', 'description', 'heroImage', 'order'], // show order column
   },
   access: {
     read: () => true,
@@ -15,6 +15,15 @@ const Services: CollectionConfig = {
     gallery: { media: true },
   },
   fields: [
+    {
+      name: 'order',
+      label: 'Order',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Lower numbers appear first',
+      },
+    },
     {
       name: 'title',
       label: 'Service Title',
@@ -47,7 +56,7 @@ const Services: CollectionConfig = {
               relationTo: 'media', // uses your Media collection
               admin: { description: 'Shown as the primary visual for this service.' },
               filterOptions: {
-                mimeType: { contains: 'image/' }, // optional: restrict to images
+                mimeType: { contains: 'image/' }, // restrict to images
               },
             },
             {

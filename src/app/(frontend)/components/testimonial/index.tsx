@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import FallbackImage from '../fallback-image'
-// import test from '@/../public/images/Brian-Suico-Realtor.jpg'
-// import test2 from '../../../../../public/images/Judy-Sehling-Realtor.jpg'
-// import test3 from '../../../../../public/images/Terry-Realtor.jpg'
 
 // {
 //   name: 'Brian Suico',
@@ -22,7 +19,7 @@ import FallbackImage from '../fallback-image'
 //   stats: ['+45%', '+60%'],
 //   labels: ['Brand Reach', 'Lead Conversions'],
 //   text: 'Incredible photographer and videographer! My photos are always edited better than I could do on my own. Such a relief to always have the best shots. He is fast yet thorough at the appointments as well... which is another thing I greatly appreciate. Best of the best!',
-//   image: '/images/Judy-Sehling-Realtor.jpg',
+//   image: '/images/Judy-Sehling-Realtor.webp',
 // },
 // {
 //   name: 'Terry Tea',
@@ -41,6 +38,22 @@ const testimonials = [
     text: 'I had great pleasure working with Mike and the team over at Be Clear Media to prepare my listing. Mike works like a close team of in-house photographers and videographers to showcase our property. I was very impressed with their service and follow up. We are always looking for quick turn-over times as this market is fast paced. We are incredibly happy with the results and will continue to use Mike and his team.',
     video: '/video/alpro-testimonial.mp4',
     image: undefined, // Optional image property added
+  },
+  {
+    name: 'Judy Sehling',
+    role: 'Judy Sehling & Associated & Keller Williams ',
+    stats: ['+45%', '+60%'],
+    labels: ['Brand Reach', 'Lead Conversions'],
+    text: 'Incredible photographer and videographer! My photos are always edited better than I could do on my own. Such a relief to always have the best shots. He is fast yet thorough at the appointments as well... which is another thing I greatly appreciate. Best of the best!',
+    image: '/images/testimonial/Judy-Sehling-Realtor.webp',
+  },
+  {
+    name: 'Brian Suico',
+    role: '1NE Collective Top 1% Realtor',
+    stats: ['X2.0', '+18%'],
+    labels: ['Better Page Performance', 'Better Page Performance'],
+    text: 'Honestly the best Real Estate Photographer I have ever used. Mike is always on time, very professional, and has a great eye for the perfect shots. Photos always comes out so beautiful, I even got a new real estate listing just because of his photography skills! Highly recommended to all my friends and colleagues.',
+    image: '/images/Brian-Suico-Realtor.jpg',
   },
 ]
 
@@ -139,11 +152,11 @@ export default function TestimonialCarousel() {
               <div key={i}>{s}</div>
             ))}
           </div> */}
-          <div className="flex gap-8 text-xs tracking-widest uppercase">
+          {/* <div className="flex gap-8 text-xs tracking-widest uppercase">
             {current.labels.map((label, i) => (
               <div key={i}>{label}</div>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <div className="mb-20 max-w-2xl space-y-5">

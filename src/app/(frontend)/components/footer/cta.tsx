@@ -53,7 +53,7 @@ export default function CTASection() {
   }
 
   return (
-    <section className={clsx('relative isolate h-[100svh] overflow-hidden backdrop-blur-xl')}>
+    <section className={clsx('relative isolate h-[100vh] overflow-hidden backdrop-blur-xl')}>
       {/* background video (decorative) */}
       <motion.video
         className="absolute inset-0 z-0 h-full w-full object-cover"

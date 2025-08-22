@@ -21,6 +21,7 @@ type Service = {
   description: string
   extendedDescription?: string
   heroImage?: Media | null
+  order?: number // ← NEW
 }
 
 export default function Accordion() {
@@ -35,13 +36,22 @@ export default function Accordion() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        // Depth ensures heroImage is populated even if defaultPopulate is bypassed
-        const res = await fetch('/api/services?limit=100&depth=2', {
+        // ask Payload to sort by `order` ascending
+        const res = await fetch('/api/services?limit=100&depth=2&sort=order', {
           headers: { Accept: 'application/json' },
           cache: 'no-store',
         })
         const data = await res.json()
-        setServices(data.docs ?? [])
+
+        // fallback: if some docs lack `order`, push them to the end and A→Z by title
+        const docs: Service[] = (data.docs ?? []).slice().sort((a: Service, b: Service) => {
+          const ao = typeof a.order === 'number' ? a.order : Number.POSITIVE_INFINITY
+          const bo = typeof b.order === 'number' ? b.order : Number.POSITIVE_INFINITY
+          if (ao !== bo) return ao - bo
+          return a.title.localeCompare(b.title)
+        })
+
+        setServices(docs)
       } catch (err) {
         console.error('Failed to fetch services:', err)
       }
@@ -88,7 +98,6 @@ export default function Accordion() {
                 {openIndex === idx && (
                   <motion.div
                     key="content"
-                    // ⬇️ remove height variants; just animate opacity + translate
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
@@ -103,7 +112,7 @@ export default function Accordion() {
                       )}
                     </div>
 
-                    {/* Masked image reveal */}
+                    {/* Media */}
                     <motion.div
                       key="masked-image"
                       initial={{ clipPath: 'inset(0 100% 0 0)' }}
@@ -113,7 +122,6 @@ export default function Accordion() {
                       className="relative mt-4 md:mt-0 md:ml-6 shadow-lg overflow-hidden w-full md:w-1/2"
                     >
                       <motion.div
-                        // ⬇️ transforms run on GPU; avoid filter (paint-heavy) for smoother perf
                         initial={{ scale: 1.04 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 1.01 }}

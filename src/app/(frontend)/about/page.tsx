@@ -126,13 +126,23 @@ export default function HomeClient() {
           transition={{ delay: 1.2, duration: 1, ease: easeOutExpo }}
         >
           <video
-            src="https://player.vimeo.com/progressive_redirect/playback/838386999/rendition/720p/file.mp4?loc=external&log_user=0&signature=776cddfad94830fa3fcb98d0ac080d53d04db6e6cadf2d72d4215c7ee1c1c1b4"
             autoPlay
             loop
             muted
+            controls={false}
             playsInline
+            preload="auto"
             className="object-cover w-full h-full"
-          />
+          >
+            {/* Chrome/Firefox/Edge */}
+            <source src="/images/banner-video-be-clear.av1.webm" type="video/webm" />
+            <source src="/images/banner-video-be-clear.vp9.webm" type="video/webm" />
+            {/* Universal fallback (must be real H.264) */}
+            <source src="/images/banner-video-be-clear.h264.mp4" type="video/mp4" />
+            {/* Optional (not ideal for web) */}
+            <source src="/images/banner-video-be-clear.mov" type="video/quicktime" />
+            Your browser does not support the video tag.
+          </video>
           {/* soft overlay that fades out on scroll */}
           <motion.div
             style={{ opacity: overlayOpacity }}

@@ -46,7 +46,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
       >
         <div ref={bannerRef} className="text-white space-y-4 mb-24">
           {subtitle && <h3 className="text-sm uppercase tracking-widest">{subtitle}</h3>}
-          <h1 className="text-7xl font-bold">{title}</h1>
+          <h1 className="text-3xl md:text-7xl font-bold">{title}</h1>
         </div>
       </div>
     </section>

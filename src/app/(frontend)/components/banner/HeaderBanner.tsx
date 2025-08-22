@@ -33,7 +33,7 @@ const Banner = ({ children, url, excerpt, title, website }: Props) => {
   return (
     <div
       ref={bannerRef}
-      className="max-h-screen h-full sm:max-w-[90vw] overflow-hidden absolute flex justify-center md:my-auto w-full z-10 leading-[1.35] sm:mx-[7.5vw]"
+      className="max-h-screen h-[100svh] sm:max-w-[90vw] overflow-hidden absolute flex justify-center md:my-auto w-full z-10 leading-[1.35] sm:mx-[7.5vw]"
     >
       <div className="flex my-auto h-full text-white sm:pt-[20vh] pb-[8vh]">
         <div className="mb-0 mt-auto md:my-auto ml-4 mr-auto sm:mx-auto text-left">
