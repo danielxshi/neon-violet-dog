@@ -36,7 +36,7 @@ const ClientLogos: React.FC = () => {
   useEffect(() => {
     async function fetchLogos() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/client-logos?limit=100`)
+        const res = await fetch(`/api/client-logos?limit=100`)
         const data = await res.json()
         const formatted = data.docs.map((doc: any) => ({
           id: doc.id,
