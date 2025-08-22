@@ -6,6 +6,9 @@ const Pricing: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'price'],
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: 'title',
