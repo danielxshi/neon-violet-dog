@@ -22,7 +22,7 @@ export default function PricingPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/pricing?limit=100') // adjust the limit as needed
+        const res = await fetch(`/api/pricing?limit=100`) // adjust the limit as needed
         const data = await res.json()
         const grouped: Record<string, PricingItem[]> = {}
 
