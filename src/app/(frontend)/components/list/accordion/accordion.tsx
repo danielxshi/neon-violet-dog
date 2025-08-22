@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import LinkListItem from './LinkedListItem'
 import LinkList from './LinkedList'
 import Button from './button'
-
-import ProjectMessages from '../../../../JSON/ProjectMessages'
 import { AnimatePresence } from 'framer-motion'
 import { DelayMotion } from './DelayMotion'
 
@@ -33,7 +31,11 @@ const ServiceList = () => {
         const data = await res.json()
 
         // fallback client sort: missing `order` go to end; then A→Z by title
-        const docs: Service[] = (data.docs ?? []).slice().sort((a, b) => {
+        interface ApiResponse {
+          docs?: Service[]
+        }
+
+        const docs: Service[] = ((data as ApiResponse).docs ?? []).slice().sort((a, b) => {
           const ao = typeof a.order === 'number' ? a.order : Number.POSITIVE_INFINITY
           const bo = typeof b.order === 'number' ? b.order : Number.POSITIVE_INFINITY
           if (ao !== bo) return ao - bo
