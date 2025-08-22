@@ -22,32 +22,58 @@ export default function PricingPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/pricing?limit=100`) // adjust the limit as needed
-        const data = await res.json()
-        const grouped: Record<string, PricingItem[]> = {}
+        const res = await fetch('/api/pricing?limit=100&sort=order', {
+          headers: { Accept: 'application/json' },
+          cache: 'no-store',
+        })
+        if (!res.ok) {
+          const text = await res.text()
+          throw new Error(`HTTP ${res.status} ${res.statusText} → ${text.slice(0, 200)}`)
+        }
 
-        for (const item of data.docs) {
-          const cat = item.category?.toUpperCase()
-          if (cat) {
-            if (!grouped[cat]) grouped[cat] = []
-            grouped[cat].push(item)
-          }
+        const bodyText = await res.text()
+        let data: any
+        try {
+          data = JSON.parse(bodyText)
+        } catch {
+          throw new Error(`Non-JSON response: ${bodyText.slice(0, 200)}`)
+        }
+
+        const items: PricingItem[] = Array.isArray(data?.docs)
+          ? data.docs
+          : Array.isArray(data)
+            ? data
+            : Array.isArray(data?.data)
+              ? data.data
+              : []
+
+        const grouped: Record<string, PricingItem[]> = {}
+        for (const item of items) {
+          const cat = item?.category?.toUpperCase?.()
+          if (!cat) continue
+          ;(grouped[cat] ||= []).push(item)
         }
 
         setPricingData(grouped)
+
+        // if current tab is empty, switch to the first category that has data
+        if (!grouped[selectedCategory]) {
+          const firstWithData = categories.find((c) => grouped[c]?.length)
+          if (firstWithData) setSelectedCategory(firstWithData)
+        }
       } catch (error) {
         console.error('Failed to load pricing data:', error)
       }
     }
 
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <main className="flex flex-col bg-white text-black">
       <Banner title="Pricing" subtitle="Be Clear Media" image="/images/hero-banner.jpg" />
 
-      {/* Intro Section */}
       <section className="px-6 md:px-16 py-16 grid md:grid-cols-2 gap-10 max-w-screen-xl mx-auto">
         <div className="flex justify-center h-[450px] overflow-hidden">
           <FallbackImage
@@ -76,9 +102,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section className="px-6 md:px-20 py-10">
-        {/* Tabs */}
         <div className="flex border-b border-gray-300 mb-10 text-sm font-semibold tracking-wide overflow-x-auto">
           {categories.map((cat) => (
             <button
@@ -95,7 +119,6 @@ export default function PricingPage() {
           ))}
         </div>
 
-        {/* Category Pricing */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={selectedCategory}
@@ -105,17 +128,16 @@ export default function PricingPage() {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-10"
           >
-            {/* Section Label */}
             <h3 className="text-2xl font-semibold border-b pb-2 mb-6">
               {selectedCategory} PRICING
             </h3>
 
-            {pricingData[selectedCategory]?.length > 0 ? (
-              pricingData[selectedCategory].map((item) => (
+            {(pricingData[selectedCategory] ?? []).length > 0 ? (
+              (pricingData[selectedCategory] ?? []).map((item) => (
                 <div key={item.id}>
                   <div className="flex justify-between items-start">
                     <h4 className="text-lg font-semibold max-w-xl">{item.title}</h4>
-                    {item.price !== undefined && (
+                    {typeof item.price === 'number' && (
                       <p className="text-xl font-medium whitespace-nowrap">${item.price}</p>
                     )}
                   </div>
