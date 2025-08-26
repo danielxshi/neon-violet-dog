@@ -135,12 +135,11 @@ export default function HomeClient() {
             className="object-cover w-full h-full"
           >
             {/* Chrome/Firefox/Edge */}
-            <source src="/images/banner-video-be-clear.av1.webm" type="video/webm" />
-            <source src="/images/banner-video-be-clear.vp9.webm" type="video/webm" />
+            <source src="/images/banner-video-be-clear.av1.1440p.webm" type="video/webm" />
             {/* Universal fallback (must be real H.264) */}
-            <source src="/images/banner-video-be-clear.h264.mp4" type="video/mp4" />
+            <source src="/images/banner-video-be-clear.h264.1440p.mp4" type="video/mp4" />
             {/* Optional (not ideal for web) */}
-            <source src="/images/banner-video-be-clear.mov" type="video/quicktime" />
+            <source src="/images/banner-video-be-clear.1440p.mov" type="video/quicktime" />
             Your browser does not support the video tag.
           </video>
           {/* soft overlay that fades out on scroll */}

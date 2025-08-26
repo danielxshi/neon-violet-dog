@@ -770,9 +770,24 @@ export interface Pricing {
  */
 export interface Service {
   id: number;
+  /**
+   * Lower numbers appear first
+   */
+  order?: number | null;
   title: string;
   description: string;
   extendedDescription?: string | null;
+  /**
+   * Shown as the primary visual for this service.
+   */
+  heroImage?: (number | null) | Media;
+  gallery?:
+    | {
+        media: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1387,9 +1402,18 @@ export interface PricingSelect<T extends boolean = true> {
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
+  order?: T;
   title?: T;
   description?: T;
   extendedDescription?: T;
+  heroImage?: T;
+  gallery?:
+    | T
+    | {
+        media?: T;
+        caption?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
